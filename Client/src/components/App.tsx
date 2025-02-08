@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { IProduct } from "../models/IProduct";
 import Header from "./Header";
 import ProductList from "./ProductList";
+import ButtonUsage from "./ButtonUsage";
+import { Container, CssBaseline } from "@mui/material";
 
 
 function App() {
@@ -20,23 +22,14 @@ function App() {
 
   }, [])
 
-
-  function addProduct() {
-    setProducts([...products,
-    {
-      id: 7,
-      name: "product 6",
-      description: "deneme",
-      imageUrl: "1.jpg",
-      price: 54000,
-      isActive: true
-    }]);
-  }
-
   return (
     <>
-      <Header products={products} />
-      <ProductList products={products} addProduct={addProduct} />
+      <CssBaseline />
+      <Header />
+      <Container>
+        <ProductList products={products}/><br />
+      </Container>
+
     </>
 
   )

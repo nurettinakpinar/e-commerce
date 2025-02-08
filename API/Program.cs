@@ -34,6 +34,11 @@ if (app.Environment.IsDevelopment())
 }
 
 
+app.UseHttpsRedirection();
+
+// This allows the reach static files for others.
+app.UseStaticFiles();
+
 // CORS Configuration: 
 // This allows requests from 'http://localhost:3000' (React frontend) to access this API.
 // It permits any HTTP headers and any HTTP methods (GET, POST, PUT, DELETE, etc.).
@@ -42,7 +47,6 @@ app.UseCors(opt => {
     opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
 });
 
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

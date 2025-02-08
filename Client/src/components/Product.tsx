@@ -1,20 +1,28 @@
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import { IProduct } from "../models/IProduct";
+import { AddShoppingCart, Search } from "@mui/icons-material";
 
-interface Props{
+interface Props {
     product: IProduct
 }
 
-export default function Product({product}: Props) {
+export default function Product({ product }: Props) {
     return (
-        <>
-            {
-                product.isActive ? (
-                    <div>
-                        <h2>{product.name} </h2>
-                        <p>{product.price}</p>
-                    </div>
-                ) : <p> ürün satışta değil!</p>
-            }
-        </>
+        <Card variant="outlined">
+            <CardMedia sx={{ height: 250, backgroundSize: "contain" }} image={`http://localhost:5298/images/${product.imageUrl}`} />
+            <CardContent>
+                <Typography gutterBottom variant="h6" component="h2" color="text-secondary">
+                    {product.name}
+                </Typography>
+                <Typography variant="body2" color="secondary">
+                    {(product.price / 100).toFixed(2)} ₺ 
+                </Typography>
+            </CardContent>
+
+            <CardActions >
+                <Button variant="outlined" startIcon={<AddShoppingCart />} color="success" size="small">Sepete Ekle</Button>
+                <Button variant="outlined" startIcon={<Search/>} size="small">İncele</Button>
+            </CardActions>
+        </Card>
     );
 }
