@@ -1,10 +1,12 @@
 using API.Data;
+using API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<DataContext>(options =>{
+builder.Services.AddDbContext<DataContext>(options =>
+{
     var config = builder.Configuration;
     var connectionString = config.GetConnectionString("defaultConnection");
 
@@ -24,15 +26,17 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandling>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI( options => {
+    app.UseSwaggerUI(options =>
+    {
         options.SwaggerEndpoint("/openapi/v1.json", "Demo API");
     });
 }
-
 
 app.UseHttpsRedirection();
 
@@ -43,10 +47,10 @@ app.UseStaticFiles();
 // This allows requests from 'http://localhost:3000' (React frontend) to access this API.
 // It permits any HTTP headers and any HTTP methods (GET, POST, PUT, DELETE, etc.).
 // Make sure this origin matches the frontend running in development.
-app.UseCors(opt => {
+app.UseCors(opt =>
+{
     opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
 });
-
 
 app.UseAuthorization();
 

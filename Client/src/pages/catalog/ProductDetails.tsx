@@ -2,16 +2,17 @@ import { CircularProgress, Divider, Grid2, Table, TableBody, TableCell, TableCon
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { IProduct } from "../../models/IProduct";
+import requests from "../../api/requests";
+import NotFound from "../../errors/NotFound";
 
 export default function ProductDeatilsPage() {
-    const { id } = useParams();
+    const { id } = useParams<{id: string}>();
     const [product, setProduct] = useState<IProduct | null>();
     const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
-        fetch(`http://localhost:5298/api/products/${id}`)
-            .then(response => response.json())
+        id && requests.Catalog.details(parseInt(id))
             .then(data => setProduct(data))
             .catch(error => console.log(error))
             .finally(() => setLoading(false))
@@ -21,7 +22,7 @@ export default function ProductDeatilsPage() {
         return (<CircularProgress />);
 
     if (!product)
-        return (<h5>Product not found</h5>)
+        return (<NotFound/>)
     return (
         <Grid2 container spacing={6}>
             <Grid2 size={{ xl: 3, lg: 4, md: 5 , sm: 6, xs : 12}}>
@@ -39,7 +40,8 @@ export default function ProductDeatilsPage() {
                               <TableRow>
                                 <TableCell>Açıklama</TableCell>
                                 <TableCell>{product.description}</TableCell>
-                            </TableRow>                            <TableRow>
+                            </TableRow>
+                            <TableRow>
                                 <TableCell>Mevcut Stok</TableCell>
                                 <TableCell>{product.stock}</TableCell>
                             </TableRow>
