@@ -1,6 +1,7 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
-import { IProduct } from "../models/IProduct";
+import { IProduct } from "../../models/IProduct";
 import { AddShoppingCart, Search } from "@mui/icons-material";
+import { Link } from "react-router";
 
 interface Props {
     product: IProduct
@@ -15,13 +16,13 @@ export default function Product({ product }: Props) {
                     {product.name}
                 </Typography>
                 <Typography variant="body2" color="secondary">
-                    {(product.price / 100).toFixed(2)} ₺ 
+                    {product.price.toFixed(2)} ₺ 
                 </Typography>
             </CardContent>
 
             <CardActions >
                 <Button variant="outlined" startIcon={<AddShoppingCart />} color="success" size="small">Sepete Ekle</Button>
-                <Button variant="outlined" startIcon={<Search/>} size="small">İncele</Button>
+                <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search/>} size="small">İncele</Button>
             </CardActions>
         </Card>
     );
