@@ -2,12 +2,30 @@ import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@
 import { IProduct } from "../../models/IProduct";
 import { AddShoppingCart, Search } from "@mui/icons-material";
 import { Link } from "react-router";
+import { useState } from "react";
+import requests from "../../api/requests";
+import { LoadingButton } from "@mui/lab";
+import { useCartContext } from "../../context/CartContext";
+import { toast } from "react-toastify";
+import { currencyTRY } from "../../utils/formatCurrency";
 
 interface Props {
     product: IProduct
 }
 
 export default function Product({ product }: Props) {
+
+    const [loading, setLoading] = useState(false);
+    const { setCart } = useCartContext();
+
+    function handleAddItem(productId: number) {
+        setLoading(true);
+        requests.Cart.addItem(productId).then(cart => {
+                    setCart(cart);
+                    toast.success("Ürün Sepetinize Eklendi");
+                }).catch(error => console.log(error)).finally(() => setLoading(false));
+    }
+
     return (
         <Card variant="outlined">
             <CardMedia sx={{ height: 250, backgroundSize: "contain" }} image={`http://localhost:5298/images/${product.imageUrl}`} />
@@ -16,13 +34,13 @@ export default function Product({ product }: Props) {
                     {product.name}
                 </Typography>
                 <Typography variant="body2" color="secondary">
-                    {product.price.toFixed(2)} ₺ 
+                    {currencyTRY.format(product.price)}
                 </Typography>
             </CardContent>
 
             <CardActions >
-                <Button variant="outlined" startIcon={<AddShoppingCart />} color="success" size="small">Sepete Ekle</Button>
-                <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search/>} size="small">İncele</Button>
+                <LoadingButton variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />} onClick={() => handleAddItem(product.id)} loading={loading}>Sepete Ekle</LoadingButton>
+                <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search />} size="small">İncele</Button>
             </CardActions>
         </Card>
     );

@@ -1,6 +1,7 @@
 import { AccountCircle, ShoppingCart } from "@mui/icons-material";
 import { AppBar, Badge, Box, Button, Container, IconButton, Stack, Toolbar, Typography } from "@mui/material";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
+import { useCartContext } from "../context/CartContext";
 
 const links = [
     { title: "Ana Sayfa", to: "/" },
@@ -19,8 +20,11 @@ const navStyles = {
 }
 
 export default function Header() {
+
+    const { cart } = useCartContext();
+    const itemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0);
     return (
-        <AppBar position="static" sx={{ mb: 4 }}>
+        <AppBar position="static" sx={{ mb: 4, background: "#759841" }}>
             <Container>
                 <Toolbar sx={{ display: "flex", justifyContent: "space-between" }} >
                     <Box sx={{ display: "flex", alignItems: "center" }} >
@@ -40,9 +44,9 @@ export default function Header() {
                             }
                         </Stack>
                     </Box>
-                    <Box>
-                        <IconButton size="large" edge="start" color="inherit"  >
-                            <Badge badgeContent="2" color="secondary">
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <IconButton component={Link} to="/cart" size="large" edge="start" color="inherit"  >
+                            <Badge badgeContent={itemCount} color="warning">
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>

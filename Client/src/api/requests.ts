@@ -3,12 +3,13 @@ import { toast } from "react-toastify";
 import { router } from "../Router/Routes";
 
 axios.defaults.baseURL = "http://localhost:5298/api/";
+axios.defaults.withCredentials = true;
+
 axios.interceptors.response.use(
     response => {
         return response;
     },
     (error: AxiosError) => {
-        // Check if `error.response` exists
         if (error.response) {
             const { data, status } = error.response as AxiosResponse;
             switch (status) {
@@ -42,15 +43,13 @@ axios.interceptors.response.use(
                     break;
             }
         } else {
-            // Handle cases where no response is received
             console.error("Network error or no response received:", error);
             toast.error("Network error or server is unreachable");
         }
 
-        return Promise.reject(error.response); // Reject with `error.response` or `undefined`
+        return Promise.reject(error.response);
     }
 );
-
 
 const queries =
 {
@@ -59,7 +58,6 @@ const queries =
     put: (url: string, body: {}) => axios.put(url, body).then((response: AxiosResponse) => response.data),
     delete: (url: string) => axios.delete(url).then((response: AxiosResponse) => response.data),
 }
-
 
 const Catalog = {
     list: () => queries.get("products"),
@@ -74,10 +72,16 @@ const Errors = {
     getValidationError: () => queries.get("/Error/validation-error"),
 }
 
+const Cart = {
+    get: () => queries.get("Cart"),
+    addItem: (productId: number, quantity = 1 ) => queries.post(`cart?productId=${productId}&quantity=${quantity}`,{}),
+    deleteItem: (productId: number, quantity = 1 ) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`),
+}
 
 const requests = {
     Catalog,
-    Errors
+    Errors,
+    Cart
 }
 
 export default requests
