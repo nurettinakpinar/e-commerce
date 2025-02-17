@@ -1,6 +1,13 @@
+using System.Text;
 using API.Data;
+using API.Entity;
 using API.Middlewares;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +23,46 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Register CORS service to allow cross-origin requests (configured later in the pipeline)
 builder.Services.AddCors();
 
+
+// Adds Identity services to the application for user authentication and role management.
+// - `AppUser` represents the user entity (custom user model).
+// - `AppRole` represents the role entity (custom role model).
+// - `AddEntityFrameworkStores<DataContext>()` integrates Identity with Entity Framework Core, 
+//   allowing Identity to use the `DataContext` database to store users and roles.
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<DataContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = true;
+});
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidIssuer = "nurettinakpinar.com",
+        ValidateAudience = false,
+        ValidAudience = "nurettin",
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWTSecurity:SecretKey"]!)),
+        ValidateLifetime = true,
+    };
+});
+
 // Add controllers to the application
 // This enables API endpoints to handle HTTP requests (GET, POST, PUT, DELETE, etc.).
 // Without this, the app won't recognize controllers and won't respond to API requests.
@@ -23,6 +70,8 @@ builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
@@ -36,6 +85,7 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "Demo API");
     });
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
@@ -52,8 +102,12 @@ app.UseCors(opt =>
     opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
 });
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+SeedDatabase.Initialize(app);
 
 app.Run();

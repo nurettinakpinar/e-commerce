@@ -1,6 +1,7 @@
 using API.Data;
 using API.DTO;
 using API.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ public class CartController : ControllerBase
         _context = context;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<CartDTO>> GetCart()
     {
@@ -53,6 +55,8 @@ public class CartController : ControllerBase
 
         if (cart == null)
         {
+            // `Guid.NewGuid()` generates a globally unique identifier (GUID),
+            // commonly used for database keys, user IDs, and session tracking.
             var customerId = Guid.NewGuid().ToString();
 
             var cookieOptions = new CookieOptions
@@ -78,7 +82,7 @@ public class CartController : ControllerBase
 
         cart.DeleteItem(productId, quantity);
         var result = await _context.SaveChangesAsync() > 0;
-        
+
         if (result)
             return CreatedAtAction(nameof(GetCart), cartToDTO(cart));
 

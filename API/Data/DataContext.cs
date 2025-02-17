@@ -1,14 +1,12 @@
 using API.Entity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class DataContext : DbContext
+public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, AppRole, string>(options)
 {
-    public DataContext(DbContextOptions options) : base(options)
-    {
-
-    }
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Cart> Carts => Set<Cart>();
 
@@ -18,7 +16,7 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<Product>().HasData(
             new List<Product>() {
-                 new Product() 
+                 new Product()
                     {
                         Id = 1,
                         Name = "Iphone 11",
@@ -27,8 +25,8 @@ public class DataContext : DbContext
                         Price = 20000,
                         IsActive = true,
                         Stock = 1
-                    },                 
-                    new Product() 
+                    },
+                    new Product()
                     {
                         Id = 2,
                         Name = "Iphone 12",
@@ -37,8 +35,8 @@ public class DataContext : DbContext
                         Price = 21000,
                         IsActive = true,
                         Stock = 1
-                    },                 
-                    new Product() 
+                    },
+                    new Product()
                     {
                         Id = 3,
                         Name = "Iphone 13",
@@ -47,8 +45,8 @@ public class DataContext : DbContext
                         Price = 22000,
                         IsActive = true,
                         Stock = 1
-                    },                
-                     new Product() 
+                    },
+                     new Product()
                     {
                         Id = 4,
                         Name = "Iphone 14",
