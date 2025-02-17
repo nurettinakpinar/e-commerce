@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
-import { useCartContext } from "../../context/CartContext";
 import { LoadingButton } from "@mui/lab";
 import { WhatsApp } from "@mui/icons-material";
 import { currencyTRY } from "../../utils/formatCurrency";
+import { useAppSelector } from "../../hooks/hooks";
 
 export default function CartSummary() {
-    const { cart } = useCartContext();
+    const { cart } = useAppSelector(state => state.cart);
 
     {/*Reduce function used to accumulate values in an array and return single result. Yani this function can use for summing value in an array.*/ }
     const subTotal = cart?.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0) ?? 0;

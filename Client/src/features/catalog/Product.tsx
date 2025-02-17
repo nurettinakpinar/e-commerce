@@ -1,13 +1,11 @@
-import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
-import { IProduct } from "../../models/IProduct";
 import { AddShoppingCart, Search } from "@mui/icons-material";
-import { Link } from "react-router";
-import { useState } from "react";
-import requests from "../../api/requests";
 import { LoadingButton } from "@mui/lab";
-import { useCartContext } from "../../context/CartContext";
-import { toast } from "react-toastify";
+import { Card, CardMedia, CardContent, Typography, CardActions, Button } from "@mui/material";
+import { Link } from "react-router";
+import { IProduct } from "../../models/IProduct";
 import { currencyTRY } from "../../utils/formatCurrency";
+import { addItemToCart } from "../cart/cartSlice";
+import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 
 interface Props {
     product: IProduct
@@ -15,16 +13,8 @@ interface Props {
 
 export default function Product({ product }: Props) {
 
-    const [loading, setLoading] = useState(false);
-    const { setCart } = useCartContext();
-
-    function handleAddItem(productId: number) {
-        setLoading(true);
-        requests.Cart.addItem(productId).then(cart => {
-                    setCart(cart);
-                    toast.success("Ürün Sepetinize Eklendi");
-                }).catch(error => console.log(error)).finally(() => setLoading(false));
-    }
+    const { status } = useAppSelector(state => state.cart);
+    const distpatch = useAppDispatch();
 
     return (
         <Card variant="outlined">
@@ -39,7 +29,8 @@ export default function Product({ product }: Props) {
             </CardContent>
 
             <CardActions >
-                <LoadingButton variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />} onClick={() => handleAddItem(product.id)} loading={loading}>Sepete Ekle</LoadingButton>
+                <LoadingButton variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />}
+                    onClick={() => distpatch(addItemToCart({ productId: product.id }))} loading={status === "pendingAddItem" + product.id}>Sepete Ekle</LoadingButton>
                 <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search />} size="small">İncele</Button>
             </CardActions>
         </Card>

@@ -1,19 +1,18 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Container, Card, Typography, Button, Divider, Grid2 } from "@mui/material";
 import { AddCircleOutline, Delete, RemoveCircleOutline } from "@mui/icons-material";
 import { NavLink } from "react-router";
-import { useCartContext } from "../../context/CartContext";
 import { LoadingButton } from "@mui/lab";
-import { useState } from "react";
-import requests from "../../api/requests";
-import CartSummary from "./CartSummary";
 import { currencyTRY } from "../../utils/formatCurrency";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { addItemToCart, deleteItemFromCart } from "./cartSlice";
+import CartSummary from "./CartSummary";
 
 
 
 export default function ShoppingCartPage() {
 
-    const [status, setStatus] = useState({ loading: false, id: "" });
-    const { cart, setCart } = useCartContext();
+    const { cart, status } = useAppSelector(state => state.cart);
+    const distpatch = useAppDispatch();
 
     if (!cart || (cart?.cartItems.length == 0)) {
         return (
@@ -26,24 +25,6 @@ export default function ShoppingCartPage() {
                 <Button variant="contained" component={NavLink} to="/catalog" sx={{ mt: 2 }}> Alışverişe Devam Et </Button>
             </Container>
         );
-    }
-
-
-    function handleAddItem(productId: number, id: string) {
-        setStatus({ loading: true, id: id });
-
-        requests.Cart.addItem(productId)
-            .then(cart => setCart(cart))
-            .catch(error => console.log(error))
-            .finally(() => setStatus({ loading: false, id: "" }));
-    }
-
-    function handleDeleteItem(productId: number, id: string, quantity = 1) {
-        setStatus({ loading: true, id: id });
-        requests.Cart.deleteItem(productId, quantity)
-            .then(cart => setCart(cart))
-            .catch(error => console.log(error))
-            .finally(() => setStatus({ loading: false, id: "" }));
     }
 
     return (
@@ -74,15 +55,15 @@ export default function ShoppingCartPage() {
                                     <TableCell align="center">{currencyTRY.format(item.price)}</TableCell>
                                     <TableCell align="center">
                                         <LoadingButton
-                                            loading={status.loading && status.id === "add" + item.productId}
-                                            onClick={() => handleAddItem(item.productId, "add" + item.productId)}
+                                            loading={status === "pendingAddItem" + item.productId}
+                                            onClick={() => distpatch(addItemToCart({ productId: item.productId }))}
                                         >
                                             <AddCircleOutline />
                                         </LoadingButton>
                                         {item.quantity}
                                         <LoadingButton
-                                            loading={status.loading && status.id === "del" + item.productId}
-                                            onClick={() => handleDeleteItem(item.productId, "del" + item.productId)}
+                                            loading={status === "pendingDeleteItem" + item.productId + "Single"}
+                                            onClick={() => distpatch(deleteItemFromCart({ productId: item.productId, quantity: 1, key: "Single" }))}
                                         >
                                             <RemoveCircleOutline />
                                         </LoadingButton>
@@ -91,8 +72,8 @@ export default function ShoppingCartPage() {
                                     <TableCell align="center">
                                         <LoadingButton
                                             color="error"
-                                            loading={status.loading && status.id === "del_all" + item.productId}
-                                            onClick={() => handleDeleteItem(item.productId, "del_all" + item.productId, item.quantity)}
+                                            loading={status === "pendingDeleteItem" + item.productId + "All"}
+                                            onClick={() => distpatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "All" }))}
                                         >
                                             <Delete />
                                         </LoadingButton>

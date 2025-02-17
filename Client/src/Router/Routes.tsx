@@ -1,14 +1,14 @@
 import { createBrowserRouter } from "react-router";
-import App from "../components/App";
-import HomePage from "../pages/HomePage";
-import AboutPage from "../pages/AboutPage";
-import ContactPage from "../pages/ContactPage";
-import CatalogPage from "../pages/catalog/CatalogPage";
-import ProductDeatilsPage from "../pages/catalog/ProductDetails";
-import ErrorPage from "../pages/ErrorPage";
+import App from "../layout/App";
+import HomePage from "../features/HomePage";
+import AboutPage from "../features/AboutPage";
+import ContactPage from "../features/ContactPage";
+import CatalogPage from "../features/catalog/CatalogPage";
+import ProductDeatilsPage from "../features/catalog/ProductDetails";
+import ErrorPage from "../features/ErrorPage";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
-import ShoppingCartPage from "../pages/Cart/ShoppingCartPage";
+import ShoppingCartPage from "../features/cart/ShoppingCartPage";
 
 {/*
     What is React Router?
