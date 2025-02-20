@@ -1,13 +1,20 @@
-import { AccountCircle, ShoppingCart } from "@mui/icons-material";
+import { ShoppingCart } from "@mui/icons-material";
 import { AppBar, Badge, Box, Button, Container, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router";
-import { useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { logout } from "../features/account/accountSlice";
+import { clearCart } from "../features/cart/cartSlice";
 
 const links = [
     { title: "Ana Sayfa", to: "/" },
     { title: "Ürünler", to: "/catalog" },
     { title: "Hakkımızda", to: "/about" },
     { title: "İletişim", to: "/contact" },
+]
+
+const authLinks = [
+    { title: "Login", to: "/login" },
+    { title: "Register", to: "/register" },
 ]
 
 const navStyles = {
@@ -22,6 +29,9 @@ const navStyles = {
 export default function Header() {
 
     const { cart } = useAppSelector(state => state.cart);
+    const { user } = useAppSelector(state => state.account);
+    const dispatch = useAppDispatch();
+
     const itemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0);
     return (
         <AppBar position="static" sx={{ mb: 4, background: "#759841" }}>
@@ -50,14 +60,33 @@ export default function Header() {
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>
-                        <IconButton size="large" edge="start" color="inherit" sx={{ marginLeft: 2 }}>
-                            <AccountCircle />
-                        </IconButton>
+                        {
+                            user ? (
+                                <Stack direction="row">
+                                    <Button sx={navStyles}>{user.name}</Button>
+                                    <Button sx={navStyles} onClick={() => {
+                                        dispatch(logout())
+                                        dispatch(clearCart())
+                                    }}>Çıkış Yap</Button>
+                                </Stack>
+
+                            ) : (
+                                <Stack direction="row">
+                                    {
+                                        authLinks.map(link => (
+                                            <Button key={link.to} component={NavLink} to={link.to} sx={navStyles}>
+                                                {link.title}
+                                            </Button>
+                                        ))
+                                    }
+                                </Stack>
+                            )
+                        }
+
+
                     </Box>
                 </Toolbar>
             </Container>
         </AppBar>
     );
 }
-
-

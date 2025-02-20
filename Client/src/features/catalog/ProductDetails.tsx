@@ -5,14 +5,14 @@ import NotFound from "../../errors/NotFound";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
 import { currencyTRY } from "../../utils/formatCurrency";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import { addItemToCart } from "../cart/cartSlice";
 import { fetchProductById, productSelector } from "./catalogSlice";
 
 export default function ProductDeatilsPage() {
 
     const { cart , status} = useAppSelector( state => state.cart); 
-    const distpatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     const { id } = useParams<{ id: string }>();
     const product = useAppSelector(state => productSelector.selectById(state, Number(id)));
@@ -22,7 +22,7 @@ export default function ProductDeatilsPage() {
 
     useEffect(() => {
         if(!product && id)
-            distpatch(fetchProductById(parseInt(id)));
+            dispatch(fetchProductById(parseInt(id)));
     }, [id]);
 
 
@@ -58,7 +58,7 @@ export default function ProductDeatilsPage() {
                 </TableContainer>
                 <Stack direction="row" sx={{mt: 4}} alignItems="center" spacing={2}>
                     <LoadingButton variant="outlined" loadingPosition="start" startIcon={<AddShoppingCart />} loading={status === "pendingAddItem" + product.id}
-                        onClick={() => distpatch(addItemToCart({productId: product.id}))}>
+                        onClick={() => dispatch(addItemToCart({productId: product.id}))}>
                         Sepete Ekle
                     </LoadingButton>
                     {

@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { IProduct } from "../../models/IProduct";
 import { currencyTRY } from "../../utils/formatCurrency";
 import { addItemToCart } from "../cart/cartSlice";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { useAppSelector, useAppDispatch } from "../../store/store";
 
 interface Props {
     product: IProduct
@@ -14,7 +14,7 @@ interface Props {
 export default function Product({ product }: Props) {
 
     const { status } = useAppSelector(state => state.cart);
-    const distpatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     return (
         <Card variant="outlined">
@@ -30,7 +30,7 @@ export default function Product({ product }: Props) {
 
             <CardActions >
                 <LoadingButton variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />}
-                    onClick={() => distpatch(addItemToCart({ productId: product.id }))} loading={status === "pendingAddItem" + product.id}>Sepete Ekle</LoadingButton>
+                    onClick={() => dispatch(addItemToCart({ productId: product.id }))} loading={status === "pendingAddItem" + product.id}>Sepete Ekle</LoadingButton>
                 <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search />} size="small">İncele</Button>
             </CardActions>
         </Card>

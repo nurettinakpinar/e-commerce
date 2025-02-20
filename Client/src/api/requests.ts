@@ -1,9 +1,18 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../Router/Routes";
+import { store } from "../store/store";
 
 axios.defaults.baseURL = "http://localhost:5298/api/";
 axios.defaults.withCredentials = true;
+
+axios.interceptors.request.use(request => {
+    const token = store.getState().account.user?.token;
+    if (token) {
+        request.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return request;
+});
 
 axios.interceptors.response.use(
     response => {
@@ -74,14 +83,21 @@ const Errors = {
 
 const Cart = {
     get: () => queries.get("Cart"),
-    addItem: (productId: number, quantity = 1 ) => queries.post(`cart?productId=${productId}&quantity=${quantity}`,{}),
-    deleteItem: (productId: number, quantity = 1 ) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`),
+    addItem: (productId: number, quantity = 1) => queries.post(`cart?productId=${productId}&quantity=${quantity}`, {}),
+    deleteItem: (productId: number, quantity = 1) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`),
+}
+
+const Account = {
+    login: (formData: any) => queries.post("account/login", formData),
+    register: (formData: any) => queries.post("account/register", formData),
+    getUser: () => queries.get("account/getuser"),
 }
 
 const requests = {
     Catalog,
     Errors,
-    Cart
+    Cart,
+    Account
 }
 
 export default requests

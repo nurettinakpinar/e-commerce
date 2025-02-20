@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { WhatsApp } from "@mui/icons-material";
 import { currencyTRY } from "../../utils/formatCurrency";
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppSelector } from "../../store/store";
 
 export default function CartSummary() {
     const { cart } = useAppSelector(state => state.cart);

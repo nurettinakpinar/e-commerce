@@ -3,16 +3,16 @@ import { AddCircleOutline, Delete, RemoveCircleOutline } from "@mui/icons-materi
 import { NavLink } from "react-router";
 import { LoadingButton } from "@mui/lab";
 import { currencyTRY } from "../../utils/formatCurrency";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { addItemToCart, deleteItemFromCart } from "./cartSlice";
 import CartSummary from "./CartSummary";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 
 
 export default function ShoppingCartPage() {
 
     const { cart, status } = useAppSelector(state => state.cart);
-    const distpatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     if (!cart || (cart?.cartItems.length == 0)) {
         return (
@@ -56,14 +56,14 @@ export default function ShoppingCartPage() {
                                     <TableCell align="center">
                                         <LoadingButton
                                             loading={status === "pendingAddItem" + item.productId}
-                                            onClick={() => distpatch(addItemToCart({ productId: item.productId }))}
+                                            onClick={() => dispatch(addItemToCart({ productId: item.productId }))}
                                         >
                                             <AddCircleOutline />
                                         </LoadingButton>
                                         {item.quantity}
                                         <LoadingButton
                                             loading={status === "pendingDeleteItem" + item.productId + "Single"}
-                                            onClick={() => distpatch(deleteItemFromCart({ productId: item.productId, quantity: 1, key: "Single" }))}
+                                            onClick={() => dispatch(deleteItemFromCart({ productId: item.productId, quantity: 1, key: "Single" }))}
                                         >
                                             <RemoveCircleOutline />
                                         </LoadingButton>
@@ -73,7 +73,7 @@ export default function ShoppingCartPage() {
                                         <LoadingButton
                                             color="error"
                                             loading={status === "pendingDeleteItem" + item.productId + "All"}
-                                            onClick={() => distpatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "All" }))}
+                                            onClick={() => dispatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "All" }))}
                                         >
                                             <Delete />
                                         </LoadingButton>
