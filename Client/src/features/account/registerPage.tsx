@@ -1,7 +1,6 @@
 import { LockOutlined } from "@mui/icons-material";
-import { Avatar, Box, Container, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
-import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router";
 import requests from "../../api/requests";
 import { toast } from "react-toastify";
@@ -91,11 +90,11 @@ export default function RegisterPage() {
                         error={!!errors.password}
                         helperText={errors.password?.message}></TextField>
 
-                    <LoadingButton loading={isSubmitting}
+                    <Button loading={isSubmitting}
                         disabled={!isValid}
                         type="submit"
                         variant="contained"
-                        fullWidth sx={{ mt: 1 }} >Kayıt Ol</LoadingButton>
+                        fullWidth sx={{ mt: 1 }} >Kayıt Ol</Button>
                 </Box>
             </Paper>
         </Container>

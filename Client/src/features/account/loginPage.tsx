@@ -1,16 +1,17 @@
 import { LockOutlined } from "@mui/icons-material";
-import { Avatar, Box, Container, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
-import { LoadingButton } from "@mui/lab";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import { loginUser } from "./accountSlice";
-import { useNavigate } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import { getCart } from "../cart/cartSlice";
 
 export default function LoginPage() {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const {user} = useAppSelector(state => state.account);
+    const location = useLocation();
 
     const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
         defaultValues: {
@@ -22,7 +23,12 @@ export default function LoginPage() {
     async function submitForm(data: FieldValues) {
         await dispatch(loginUser(data));
         await dispatch(getCart());
-        navigate("/catalog");
+        navigate(location.state?.from || "/catalog");
+    }
+
+    if(user)
+    {
+        return <Navigate to={"/catalog"}></Navigate>
     }
 
     return (
@@ -39,7 +45,6 @@ export default function LoginPage() {
                         label="Kullanıcı Adı"
                         size="small"
                         fullWidth
-                        required
                         autoFocus
                         sx={{ mb: 2 }}
                         error={!!errors.username}
@@ -49,16 +54,15 @@ export default function LoginPage() {
                         type="password"
                         size="small"
                         fullWidth
-                        required
                         autoFocus
                         sx={{ mb: 2 }}
                         error={!!errors.password}
                         helperText={errors.password?.message}></TextField>
-                    <LoadingButton loading={isSubmitting}
+                    <Button loading={isSubmitting}
                         disabled={!isValid}
                         type="submit"
                         variant="contained"
-                        fullWidth sx={{ mt: 1 }} >Giriş Yap</LoadingButton>
+                        fullWidth sx={{ mt: 1 }} >Giriş Yap</Button>
                 </Box>
             </Paper>
         </Container>

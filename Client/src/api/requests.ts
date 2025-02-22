@@ -82,7 +82,7 @@ const Errors = {
 }
 
 const Cart = {
-    get: () => queries.get("Cart"),
+    get: () => queries.get("cart"),
     addItem: (productId: number, quantity = 1) => queries.post(`cart?productId=${productId}&quantity=${quantity}`, {}),
     deleteItem: (productId: number, quantity = 1) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`),
 }
@@ -93,11 +93,18 @@ const Account = {
     getUser: () => queries.get("account/getuser"),
 }
 
+const Order = {
+    getOrders: () => queries.get("order/getOrders"),
+    getOrder: (id: number) => queries.get(`order/getOrder/${id}`),
+    createOrder: (formData: any) => queries.post("order/createOrder", formData)
+}
+
 const requests = {
     Catalog,
     Errors,
     Cart,
-    Account
+    Account,
+    Order
 }
 
 export default requests

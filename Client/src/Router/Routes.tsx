@@ -11,6 +11,9 @@ import NotFound from "../errors/NotFound";
 import ShoppingCartPage from "../features/cart/ShoppingCartPage";
 import LoginPage from "../features/account/loginPage";
 import RegisterPage from "../features/account/registerPage";
+import CheckoutPage from "../features/checkout/CheckoutPage";
+import AuthGuard from "./AuthGuard";
+import OrderList from "../features/orders/OrderList";
 
 {/*
     What is React Router?
@@ -30,18 +33,26 @@ export const router = createBrowserRouter(
             element: <App />,
             children:
                 [
-                    { path: "*", element: <NotFound /> },
+
+                    {
+                        element: <AuthGuard />, children: [
+                            { path: "checkout", element: <CheckoutPage /> },
+                            { path: "orders", element: <OrderList /> },
+                        ]
+                    },
+
                     { path: "", element: <HomePage /> },
                     { path: "about", element: <AboutPage /> },
                     { path: "contact", element: <ContactPage /> },
-                    { path: "cart", element: <ShoppingCartPage/> },
                     { path: "catalog", element: <CatalogPage /> },
                     { path: "catalog/:id", element: <ProductDeatilsPage /> },
+                    { path: "cart", element: <ShoppingCartPage /> },
                     { path: "login", element: <LoginPage /> },
                     { path: "register", element: <RegisterPage /> },
                     { path: "error", element: <ErrorPage /> },
                     { path: "server-error", element: <ServerError /> },
                     { path: "not-found", element: <NotFound /> },
+                    { path: "*", element: <NotFound /> },
                 ]
         }
 

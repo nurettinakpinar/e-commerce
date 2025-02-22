@@ -1,9 +1,10 @@
-import { ShoppingCart } from "@mui/icons-material";
-import { AppBar, Badge, Box, Button, Container, IconButton, Stack, Toolbar, Typography } from "@mui/material";
+import { KeyboardArrowDown, ShoppingCart } from "@mui/icons-material";
+import { AppBar, Badge, Box, Button, Container, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { logout } from "../features/account/accountSlice";
 import { clearCart } from "../features/cart/cartSlice";
+import React, { useState } from "react";
 
 const links = [
     { title: "Ana Sayfa", to: "/" },
@@ -13,8 +14,8 @@ const links = [
 ]
 
 const authLinks = [
-    { title: "Login", to: "/login" },
-    { title: "Register", to: "/register" },
+    { title: "Giriş Yap", to: "/login" },
+    { title: "Kayıt Ol", to: "/register" },
 ]
 
 const navStyles = {
@@ -33,9 +34,20 @@ export default function Header() {
     const dispatch = useAppDispatch();
 
     const itemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0);
+
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+    function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
+
     return (
         <AppBar position="static" sx={{ mb: 4, background: "#759841" }}>
-            <Container>
+            <Container maxWidth="lg">
                 <Toolbar sx={{ display: "flex", justifyContent: "space-between" }} >
                     <Box sx={{ display: "flex", alignItems: "center" }} >
                         {/* Header Title */}
@@ -62,13 +74,18 @@ export default function Header() {
                         </IconButton>
                         {
                             user ? (
-                                <Stack direction="row">
-                                    <Button sx={navStyles}>{user.name}</Button>
-                                    <Button sx={navStyles} onClick={() => {
-                                        dispatch(logout())
-                                        dispatch(clearCart())
-                                    }}>Çıkış Yap</Button>
-                                </Stack>
+                                <>
+                                    <Button id="user-button" onClick={handleMenuClick} endIcon={<KeyboardArrowDown />} sx={navStyles}>{user.name}</Button>
+                                    <Menu
+                                        id="user-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                                        <MenuItem component={Link} to="/orders" onClick={() => handleClose()}>Siparişlerim</MenuItem>
+                                        <MenuItem onClick={() => {
+                                            dispatch(logout());
+                                            dispatch(clearCart());
+                                            handleClose();
+                                        }}>Çıkış yap</MenuItem>
+                                    </Menu>
+                                </>
 
                             ) : (
                                 <Stack direction="row">

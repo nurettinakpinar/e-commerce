@@ -1,8 +1,7 @@
-import { CircularProgress, Divider, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Button, CircularProgress, Divider, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useParams } from "react-router";
 import NotFound from "../../errors/NotFound";
-import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
 import { currencyTRY } from "../../utils/formatCurrency";
 import { useAppDispatch, useAppSelector } from "../../store/store";
@@ -57,10 +56,10 @@ export default function ProductDeatilsPage() {
                     </Table>
                 </TableContainer>
                 <Stack direction="row" sx={{mt: 4}} alignItems="center" spacing={2}>
-                    <LoadingButton variant="outlined" loadingPosition="start" startIcon={<AddShoppingCart />} loading={status === "pendingAddItem" + product.id}
+                    <Button variant="outlined" loadingPosition="start" startIcon={<AddShoppingCart />} loading={status === "pendingAddItem" + product.id}
                         onClick={() => dispatch(addItemToCart({productId: product.id}))}>
                         Sepete Ekle
-                    </LoadingButton>
+                    </Button>
                     {
                         item?.quantity! > 0 && (
                             <Typography variant="body2">Sepetinize {item?.quantity} adet eklendi.</Typography>

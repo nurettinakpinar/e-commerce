@@ -1,7 +1,6 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Container, Card, Typography, Button, Divider, Grid2 } from "@mui/material";
 import { AddCircleOutline, Delete, RemoveCircleOutline } from "@mui/icons-material";
 import { NavLink } from "react-router";
-import { LoadingButton } from "@mui/lab";
 import { currencyTRY } from "../../utils/formatCurrency";
 import { addItemToCart, deleteItemFromCart } from "./cartSlice";
 import CartSummary from "./CartSummary";
@@ -54,29 +53,29 @@ export default function ShoppingCartPage() {
                                     <TableCell>{item.name}</TableCell>
                                     <TableCell align="center">{currencyTRY.format(item.price)}</TableCell>
                                     <TableCell align="center">
-                                        <LoadingButton
+                                        <Button
                                             loading={status === "pendingAddItem" + item.productId}
                                             onClick={() => dispatch(addItemToCart({ productId: item.productId }))}
                                         >
                                             <AddCircleOutline />
-                                        </LoadingButton>
+                                        </Button>
                                         {item.quantity}
-                                        <LoadingButton
+                                        <Button
                                             loading={status === "pendingDeleteItem" + item.productId + "Single"}
                                             onClick={() => dispatch(deleteItemFromCart({ productId: item.productId, quantity: 1, key: "Single" }))}
                                         >
                                             <RemoveCircleOutline />
-                                        </LoadingButton>
+                                        </Button>
                                     </TableCell>
                                     <TableCell align="center">{currencyTRY.format(item.price * item.quantity)}</TableCell>
                                     <TableCell align="center">
-                                        <LoadingButton
+                                        <Button
                                             color="error"
                                             loading={status === "pendingDeleteItem" + item.productId + "All"}
                                             onClick={() => dispatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "All" }))}
                                         >
                                             <Delete />
-                                        </LoadingButton>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -88,7 +87,6 @@ export default function ShoppingCartPage() {
             {/* Cart Summary Section - Takes up 1/4 of space */}
             <Grid2 sx={{ xs: 12, md: 3 }}>
                 <CartSummary />
-
             </Grid2>
         </Grid2>
 

@@ -1,8 +1,7 @@
-import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { WhatsApp } from "@mui/icons-material";
+import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import { currencyTRY } from "../../utils/formatCurrency";
 import { useAppSelector } from "../../store/store";
+import { NavLink } from "react-router";
 
 export default function CartSummary() {
     const { cart } = useAppSelector(state => state.cart);
@@ -40,9 +39,9 @@ export default function CartSummary() {
                 </Stack>
                 {/* Centering the Button */}
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <LoadingButton variant="contained" size="small" color="success" startIcon={<WhatsApp />}>
-                        Siparişi Oluştur
-                    </LoadingButton>
+                    <Button component={NavLink} to="/checkout" variant="contained" size="small" color="success">
+                    Siparişi Oluştur
+                        </Button>
                 </Box>
             </CardContent>
         </Card>

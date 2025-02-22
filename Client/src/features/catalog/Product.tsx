@@ -1,5 +1,4 @@
 import { AddShoppingCart, Search } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
 import { Card, CardMedia, CardContent, Typography, CardActions, Button } from "@mui/material";
 import { Link } from "react-router";
 import { IProduct } from "../../models/IProduct";
@@ -29,8 +28,8 @@ export default function Product({ product }: Props) {
             </CardContent>
 
             <CardActions >
-                <LoadingButton variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />}
-                    onClick={() => dispatch(addItemToCart({ productId: product.id }))} loading={status === "pendingAddItem" + product.id}>Sepete Ekle</LoadingButton>
+                <Button variant="outlined" size="small" color="success" startIcon={<AddShoppingCart />}
+                    onClick={() => dispatch(addItemToCart({ productId: product.id }))} loading={status === "pendingAddItem" + product.id}>Sepete Ekle</Button>
                 <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" startIcon={<Search />} size="small">İncele</Button>
             </CardActions>
         </Card>
