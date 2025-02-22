@@ -1,3 +1,4 @@
+
 namespace API.Entity;
 
 public class Cart
@@ -36,6 +37,11 @@ public class Cart
         {
             CartItems.Remove(item);
         }
+    }
+
+    public double calculateTotal()
+    {
+        return (double)CartItems.Sum(i => i.Product.Price * i.Quantity);
     }
 }
 
