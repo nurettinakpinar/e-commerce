@@ -21,9 +21,9 @@ export default function Review() {
                     <Typography variant="subtitle2" gutterBottom sx={{display: "flex", alignItems: "center"}}>
                         <Payments sx={{mr:2}}/>
                         Ödeme Bilgileri</Typography>
-                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("card_name")}</Typography>
-                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("card_number")}</Typography>
-                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("card_cvv")} - {getValues("card_expire_date")} </Typography>
+                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("cardname")}</Typography>
+                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("cardnumber")}</Typography>
+                    <Typography sx={{color:"text.secondary"}} gutterBottom>{getValues("cardcvc")} - {getValues("cardexpiremonth")} / {getValues("cardexpireyear")}</Typography>
                 </div>
             </Stack>
 

@@ -92,7 +92,12 @@ namespace API.Controllers
                 DeliveryFee = deliveryFee
             };
 
-            var paymentResult =  await ProcessPayment(orderDTO, cart);
+            var paymentResult = await ProcessPayment(orderDTO, cart);
+
+            if (paymentResult.Status == "failure")
+            {
+                return BadRequest(new ProblemDetails { Title = paymentResult.ErrorMessage });
+            }
 
             order.ConversationId = paymentResult.ConversationId;
             order.BasketId = paymentResult.BasketId;
@@ -123,9 +128,9 @@ namespace API.Controllers
             request.ConversationId = Guid.NewGuid().ToString();
             request.Price = cart.calculateTotal().ToString();
             request.PaidPrice = cart.calculateTotal().ToString();
-            request.Currency = Currency.EUR.ToString();
+            request.Currency = Currency.TRY.ToString();
             request.Installment = 1;
-            request.BasketId = Guid.NewGuid().ToString();
+            request.BasketId = cart.CartId.ToString();
             request.PaymentChannel = PaymentChannel.WEB.ToString();
             request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
 

@@ -13,7 +13,7 @@ export default function PaymentForm() {
                     label="Kart üstündeki İsim"
                     size="small"
                     fullWidth
-                    error={!!errors.card_name}></TextField>
+                    error={!!errors.cardname}></TextField>
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 6 }}>
@@ -21,7 +21,7 @@ export default function PaymentForm() {
                     label="Kart Numarası"
                     size="small"
                     fullWidth
-                    error={!!errors.card_number}></TextField>
+                    error={!!errors.cardnumber}></TextField>
             </Grid2>
 
             <Grid2 size={{ xs: 6, md: 4 }}>
@@ -29,7 +29,7 @@ export default function PaymentForm() {
                     label="Ay"
                     size="small"
                     fullWidth
-                    error={!!errors.card_expire_date}></TextField>
+                    error={!!errors.cardexpiremonth}></TextField>
             </Grid2>
 
             <Grid2 size={{ xs: 6, md: 4 }}>
@@ -37,7 +37,7 @@ export default function PaymentForm() {
                     label="Yıl"
                     size="small"
                     fullWidth
-                    error={!!errors.card_expire_date}></TextField>
+                    error={!!errors.cardexpireyear}></TextField>
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 4 }}>
@@ -45,7 +45,7 @@ export default function PaymentForm() {
                     label="Güvenlik Kodu"
                     size="small"
                     fullWidth
-                    error={!!errors.card_cvv}></TextField>
+                    error={!!errors.cardcvc}></TextField>
             </Grid2>
 
         </Grid2>

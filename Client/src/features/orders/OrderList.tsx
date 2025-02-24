@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Order } from "../../models/IOrder";
 import requests from "../../api/requests";
@@ -6,6 +6,130 @@ import { currencyTRY } from "../../utils/formatCurrency";
 import { ArrowRight, Close } from "@mui/icons-material";
 
 const orderStatus = ["Beklemede", "Onaylandı", "Ödeme Hatası", "Tamamlandı"];
+
+const logs = [
+    {
+        "id": 1,
+        "type": "DEBUG",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-02 23:42:33"
+    },
+    {
+        "id": 2,
+        "type": "INFO",
+        "ipAddr": "192.168.1.1",
+        "timestamp": "2025-02-16 09:21:52"
+    },
+    {
+        "id": 3,
+        "type": "INFO",
+        "ipAddr": "192.168.1.1",
+        "timestamp": "2025-02-05 19:07:45"
+    },
+    {
+        "id": 4,
+        "type": "DEBUG",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-17 08:54:08"
+    },
+    {
+        "id": 5,
+        "type": "WARNING",
+        "ipAddr": "192.168.100.100",
+        "timestamp": "2025-02-03 15:07:13"
+    },
+    {
+        "id": 6,
+        "type": "DEBUG",
+        "ipAddr": "192.168.1.1",
+        "timestamp": "2025-01-28 05:17:01"
+    },
+    {
+        "id": 7,
+        "type": "DEBUG",
+        "ipAddr": "192.168.100.100",
+        "timestamp": "2025-02-12 17:02:33"
+    },
+    {
+        "id": 8,
+        "type": "INFO",
+        "ipAddr": "172.16.0.1",
+        "timestamp": "2025-02-16 06:34:30"
+    },
+    {
+        "id": 9,
+        "type": "DEBUG",
+        "ipAddr": "172.16.0.1",
+        "timestamp": "2025-02-13 14:15:54"
+    },
+    {
+        "id": 10,
+        "type": "ERROR",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-16 04:42:25"
+    },
+    {
+        "id": 11,
+        "type": "DEBUG",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-15 17:52:50"
+    },
+    {
+        "id": 12,
+        "type": "ERROR",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-18 23:58:44"
+    },
+    {
+        "id": 13,
+        "type": "ERROR",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-07 02:21:32"
+    },
+    {
+        "id": 14,
+        "type": "ERROR",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-04 17:10:14"
+    },
+    {
+        "id": 15,
+        "type": "DEBUG",
+        "ipAddr": "192.168.100.100",
+        "timestamp": "2025-02-10 06:13:41"
+    },
+    {
+        "id": 16,
+        "type": "CRITICAL",
+        "ipAddr": "172.16.0.1",
+        "timestamp": "2025-01-31 10:42:25"
+    },
+    {
+        "id": 17,
+        "type": "DEBUG",
+        "ipAddr": "172.16.0.1",
+        "timestamp": "2025-02-08 00:50:15"
+    },
+    {
+        "id": 18,
+        "type": "DEBUG",
+        "ipAddr": "172.16.0.1",
+        "timestamp": "2025-02-14 15:24:31"
+    },
+    {
+        "id": 19,
+        "type": "DEBUG",
+        "ipAddr": "10.0.0.1",
+        "timestamp": "2025-02-12 18:57:13"
+    },
+    {
+        "id": 20,
+        "type": "ERROR",
+        "ipAddr": "192.168.1.1",
+        "timestamp": "2025-02-16 00:27:08"
+    }
+]
+
 
 export default function OrderList() {
 
@@ -37,10 +161,10 @@ export default function OrderList() {
                 <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>OrderId</TableCell>
-                            <TableCell>Order Status</TableCell>
-                            <TableCell>Order Date</TableCell>
-                            <TableCell>Total</TableCell>
+                            <TableCell>Sipariş No</TableCell>
+                            <TableCell>Sipariş Durumu</TableCell>
+                            <TableCell>Sipariş Oluşturma Tarihi</TableCell>
+                            <TableCell>Toplam</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
@@ -61,7 +185,7 @@ export default function OrderList() {
                     </TableBody>
                 </Table>
             </TableContainer>
-    
+
             {/* ✅ Move Dialog here so it is not inside other containers */}
             {open && (
                 <Dialog
@@ -119,5 +243,5 @@ export default function OrderList() {
             )}
         </>
     );
-    
+
 }
