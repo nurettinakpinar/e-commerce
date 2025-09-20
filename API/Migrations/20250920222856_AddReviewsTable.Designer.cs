@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250222093817_UpdateOrderTable")]
-    partial class UpdateOrderTable
+    [Migration("20250920222856_AddReviewsTable")]
+    partial class AddReviewsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,6 +152,83 @@ namespace API.Migrations
                     b.ToTable("CartItem");
                 });
 
+            modelBuilder.Entity("API.Entity.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 67, DateTimeKind.Utc).AddTicks(7759),
+                            Description = "Altın ve gümüş yüzük koleksiyonu",
+                            IsActive = true,
+                            Name = "Yüzükler",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 67, DateTimeKind.Utc).AddTicks(9311),
+                            Description = "Zarif kolye modelleri",
+                            IsActive = true,
+                            Name = "Kolyeler",
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 67, DateTimeKind.Utc).AddTicks(9315),
+                            Description = "Şık küpe çeşitleri",
+                            IsActive = true,
+                            Name = "Küpeler",
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 67, DateTimeKind.Utc).AddTicks(9318),
+                            Description = "El işçiliği bilezikler",
+                            IsActive = true,
+                            Name = "Bilezikler",
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 67, DateTimeKind.Utc).AddTicks(9319),
+                            Description = "Vintage broş koleksiyonu",
+                            IsActive = true,
+                            Name = "Broşlar",
+                            SortOrder = 5
+                        });
+                });
+
             modelBuilder.Entity("API.Entity.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -234,10 +311,46 @@ namespace API.Migrations
                     b.ToTable("OrderItem");
                 });
 
+            modelBuilder.Entity("API.Entity.PageContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PageContents");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Key = "about",
+                            Value = "GUL&RA kuyumculuk hakkında içerik buraya gelecek."
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Key = "contact",
+                            Value = "Adres ve iletişim bilgileri burada yönetilebilir."
+                        });
+                });
+
             modelBuilder.Entity("API.Entity.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -261,48 +374,172 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Description = "Telefon 1",
+                            Description = "18 ayar altın üzerine işlenmiş 0.5 karat elmas yüzük. El işçiliği ile özenle hazırlanmış özel tasarım.",
                             ImageUrl = "1.jpg",
                             IsActive = true,
-                            Name = "Iphone 11",
-                            Price = 20000m,
-                            Stock = 1
+                            Name = "Elmas Yüzük",
+                            Price = 25000m,
+                            Stock = 5
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Telefon 1",
+                            Description = "22 ayar altından üretilmiş zarif kolye. Günlük kullanım için ideal, şık ve modern tasarım.",
                             ImageUrl = "2.jpg",
                             IsActive = true,
-                            Name = "Iphone 12",
-                            Price = 21000m,
-                            Stock = 1
+                            Name = "Altın Kolye",
+                            Price = 15000m,
+                            Stock = 8
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Telefon 1",
+                            Description = "Platin üzerine işlenmiş inci detaylı küpe. Özel günler için mükemmel seçim.",
                             ImageUrl = "3.jpg",
                             IsActive = true,
-                            Name = "Iphone 13",
-                            Price = 22000m,
-                            Stock = 1
+                            Name = "Platin Küpe",
+                            Price = 8500m,
+                            Stock = 12
                         },
                         new
                         {
                             Id = 4,
-                            Description = "Telefon 1",
+                            Description = "925 ayar gümüşten üretilmiş örgü desenli bilezik. Her yaşa uygun zarif tasarım.",
                             ImageUrl = "4.jpg",
                             IsActive = true,
-                            Name = "Iphone 14",
-                            Price = 23000m,
-                            Stock = 1
+                            Name = "Gümüş Bilezik",
+                            Price = 3500m,
+                            Stock = 15
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Vintage tarzda pırlanta işlemeli broş. Koleksiyonculara özel nadir parça.",
+                            ImageUrl = "5.jpg",
+                            IsActive = true,
+                            Name = "Pırlanta Broş",
+                            Price = 45000m,
+                            Stock = 2
+                        });
+                });
+
+            modelBuilder.Entity("API.Entity.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("API.Entity.SeoSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Keywords")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OgDescription")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OgImage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OgTitle")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PageKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeoSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "30 yıllık deneyimimizle en kaliteli mücevherler. Altın, gümüş, pırlanta ve değerli taş koleksiyonları.",
+                            Keywords = "kuyumcu, mücevher, altın, gümüş, pırlanta, yüzük, kolye, küpe",
+                            PageKey = "home",
+                            Title = "GUL&RA Kuyumcu - Premium Mücevher ve Kuyumculuk",
+                            UpdatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 68, DateTimeKind.Utc).AddTicks(953)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "1994'ten beri mücevher sanatının en ince detaylarını işleyen köklü aile şirketi.",
+                            Keywords = "hakkımızda, kuyumcu tarihi, deneyim, kalite",
+                            PageKey = "about",
+                            Title = "Hakkımızda - GUL&RA Kuyumcu",
+                            UpdatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 68, DateTimeKind.Utc).AddTicks(2468)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Mücevher ihtiyaçlarınız için bizimle iletişime geçin. Uzman ekibimiz size yardımcı olmaya hazır.",
+                            Keywords = "iletişim, adres, telefon, randevu",
+                            PageKey = "contact",
+                            Title = "İletişim - GUL&RA Kuyumcu",
+                            UpdatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 68, DateTimeKind.Utc).AddTicks(2471)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Özenle seçilmiş mücevher koleksiyonumuz. Yüzük, kolye, küpe ve daha fazlası.",
+                            Keywords = "ürünler, mücevher koleksiyonu, katalog",
+                            PageKey = "products",
+                            Title = "Ürünlerimiz - GUL&RA Kuyumcu",
+                            UpdatedAt = new DateTime(2025, 9, 20, 22, 28, 56, 68, DateTimeKind.Utc).AddTicks(2473)
                         });
                 });
 
@@ -444,6 +681,34 @@ namespace API.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("API.Entity.Product", b =>
+                {
+                    b.HasOne("API.Entity.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("API.Entity.Review", b =>
+                {
+                    b.HasOne("API.Entity.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("API.Entity.AppRole", null)
@@ -500,9 +765,19 @@ namespace API.Migrations
                     b.Navigation("CartItems");
                 });
 
+            modelBuilder.Entity("API.Entity.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("API.Entity.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("API.Entity.Product", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

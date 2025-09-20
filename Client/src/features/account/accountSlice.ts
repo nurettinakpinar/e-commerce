@@ -30,7 +30,12 @@ export const getUser = createAsyncThunk<User>(
     "account/getuser",
     async (_, thunkAPI) => {
         try {
-            thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem("user")!)))
+            const cached = localStorage.getItem("user");
+            if (cached) {
+                try {
+                    thunkAPI.dispatch(setUser(JSON.parse(cached)));
+                } catch {}
+            }
             const user = await requests.Account.getUser();
             localStorage.setItem("user", JSON.stringify(user));
             return user;
@@ -74,7 +79,6 @@ export const AccountSlice = createSlice(
             builder.addCase(getUser.rejected, (state) => {
                 state.user = null;
                 localStorage.removeItem("user");
-                router.navigate("/login");
             });
         }
     }

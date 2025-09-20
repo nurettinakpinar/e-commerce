@@ -6,5 +6,12 @@ export interface IProduct
     price: number,
     isActive: Boolean,
     imageUrl?: string,
-    stock?: number
+    stock?: number,
+    categoryId?: number | null,
+    category?: {
+        id: number,
+        name: string,
+        description?: string,
+        isActive: boolean
+    }
 }

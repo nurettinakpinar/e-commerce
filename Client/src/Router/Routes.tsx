@@ -13,6 +13,18 @@ import LoginPage from "../features/account/loginPage";
 import RegisterPage from "../features/account/registerPage";
 import CheckoutPage from "../features/checkout/CheckoutPage";
 import AuthGuard from "./AuthGuard";
+import FavoritesPage from "../features/favorites/FavoritesPage";
+import AdminGuard from "./AdminGuard";
+import AdminLayout from "../features/admin/AdminLayout";
+import AdminDashboard from "../features/admin/Dashboard";
+import AdminProducts from "../features/admin/products/AdminProducts";
+import AdminOrders from "../features/admin/orders/AdminOrders";
+import AdminUsers from "../features/admin/users/AdminUsers";
+import AdminSettings from "../features/admin/settings/AdminSettings";
+import AdminCategories from "../features/admin/categories/AdminCategories";
+import AdminSeo from "../features/admin/seo/AdminSeo";
+import EditAbout from "../features/admin/cms/EditAbout";
+import EditContact from "../features/admin/cms/EditContact";
 import OrderList from "../features/orders/OrderList";
 
 {/*
@@ -46,12 +58,32 @@ export const router = createBrowserRouter(
                     { path: "contact", element: <ContactPage /> },
                     { path: "catalog", element: <CatalogPage /> },
                     { path: "catalog/:id", element: <ProductDeatilsPage /> },
+                    { path: "favorites", element: <FavoritesPage /> },
                     { path: "cart", element: <ShoppingCartPage /> },
                     { path: "login", element: <LoginPage /> },
                     { path: "register", element: <RegisterPage /> },
                     { path: "error", element: <ErrorPage /> },
                     { path: "server-error", element: <ServerError /> },
                     { path: "not-found", element: <NotFound /> },
+                    {
+                        element: <AdminGuard />, children: [
+                            {
+                                path: "admin",
+                                element: <AdminLayout />,
+                                children: [
+                                    { index: true, element: <AdminDashboard /> },
+                                    { path: "products", element: <AdminProducts /> },
+                                    { path: "categories", element: <AdminCategories /> },
+                                    { path: "orders", element: <AdminOrders /> },
+                                    { path: "users", element: <AdminUsers /> },
+                                    { path: "about", element: <EditAbout /> },
+                                    { path: "contact", element: <EditContact /> },
+                                    { path: "seo", element: <AdminSeo /> },
+                                    { path: "settings", element: <AdminSettings /> },
+                                ]
+                            }
+                        ]
+                    },
                     { path: "*", element: <NotFound /> },
                 ]
         }

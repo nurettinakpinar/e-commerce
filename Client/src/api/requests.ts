@@ -56,7 +56,7 @@ axios.interceptors.response.use(
             toast.error("Network error or server is unreachable");
         }
 
-        return Promise.reject(error.response);
+        return Promise.reject(error);
     }
 );
 
@@ -71,6 +71,9 @@ const queries =
 const Catalog = {
     list: () => queries.get("products"),
     details: (id: number) => queries.get(`products/${id}`),
+    create: (body: any) => queries.post("products", body),
+    update: (id: number, body: any) => queries.put(`products/${id}`, body),
+    delete: (id: number) => queries.delete(`products/${id}`),
 }
 
 const Errors = {
@@ -99,12 +102,39 @@ const Order = {
     createOrder: (formData: any) => queries.post("order/createOrder", formData)
 }
 
+const Review = {
+    getProductReviews: (productId: number) => queries.get(`review/product/${productId}`),
+    getProductStats: (productId: number) => queries.get(`review/product/${productId}/stats`),
+    create: (review: any) => queries.post("review", review),
+    update: (id: number, review: any) => queries.put(`review/${id}`, review),
+    delete: (id: number) => queries.delete(`review/${id}`)
+}
+
 const requests = {
     Catalog,
     Errors,
     Cart,
     Account,
-    Order
+    Order,
+    Review,
+    Content: {
+        get: (key: string) => queries.get(`content/${key}`),
+        update: (key: string, value: string) => queries.put(`content/${key}`, { key, value })
+    },
+    Category: {
+        list: () => queries.get("category"),
+        listAll: () => queries.get("category/all"),
+        get: (id: number) => queries.get(`category/${id}`),
+        create: (body: any) => queries.post("category", body),
+        update: (id: number, body: any) => queries.put(`category/${id}`, body),
+        delete: (id: number) => queries.delete(`category/${id}`)
+    },
+    Seo: {
+        get: (pageKey: string) => queries.get(`seo/${pageKey}`),
+        getAll: () => queries.get("seo"),
+        update: (pageKey: string, body: any) => queries.put(`seo/${pageKey}`, body),
+        delete: (pageKey: string) => queries.delete(`seo/${pageKey}`)
+    }
 }
 
 export default requests

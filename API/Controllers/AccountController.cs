@@ -88,7 +88,8 @@ public class AccountController : ControllerBase
             return Ok(new UserDTO
             {
                 Name = user.Name!,
-                Token = await _tokenService.GenerateToken(user)
+                Token = await _tokenService.GenerateToken(user),
+                Roles = (await _userManager.GetRolesAsync(user)).ToList()
             });
         }
 
@@ -131,7 +132,8 @@ public class AccountController : ControllerBase
         var test = new UserDTO
         {
             Name = user.Name!,
-            Token = await _tokenService.GenerateToken(user)
+            Token = await _tokenService.GenerateToken(user),
+            Roles = (await _userManager.GetRolesAsync(user)).ToList()
         };
         return test;
     }

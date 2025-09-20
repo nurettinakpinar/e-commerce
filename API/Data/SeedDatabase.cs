@@ -17,24 +17,29 @@ public static class SeedDatabase
                             .ServiceProvider
                             .GetRequiredService<RoleManager<AppRole>>();
 
-        if (!roleManager.Roles.Any())
+        if (!await roleManager.RoleExistsAsync("Customer"))
         {
-            var customer = new AppRole { Name = "Customer" };
-            var admin = new AppRole { Name = "Admin" };
-
-            await roleManager.CreateAsync(customer);
-            await roleManager.CreateAsync(admin);
+            await roleManager.CreateAsync(new AppRole { Name = "Customer" });
+        }
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new AppRole { Name = "Admin" });
         }
 
-        if (!userManager.Users.Any())
+        var existingAdmin = await userManager.FindByNameAsync("admin");
+        if (existingAdmin == null)
         {
-            var customer = new AppUser { Name = "nurettin akpinar", UserName = "nurettinakpinar", Email = "nurettinakpinar1@hotmail.com" };
-            var admin = new AppUser { Name = "admin", UserName = "admin", Email = "admin@hotmail.com" };
+            var Admin = new AppUser { Name = "admin", UserName = "admin", Email = "admin@hotmail.com" };
+            await userManager.CreateAsync(Admin, "Admin123.");
+            await userManager.AddToRoleAsync(Admin, "Admin");
+        }
 
-            await userManager.CreateAsync(customer, "Customer123.");
-            await userManager.AddToRoleAsync(customer, "Customer");
-            await userManager.CreateAsync(admin, "Admin123.");
-            await userManager.AddToRoleAsync(customer, "Admin");
+        var existingCustomer = await userManager.FindByNameAsync("nurettinakpinar");
+        if (existingCustomer == null)
+        {
+            var Customer = new AppUser { Name = "nurettin akpinar", UserName = "nurettinakpinar", Email = "nurettinakpinar1@hotmail.com" };
+            await userManager.CreateAsync(Customer, "Customer123.");
+            await userManager.AddToRoleAsync(Customer, "Customer");
         }
     }
 }

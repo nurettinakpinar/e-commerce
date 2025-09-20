@@ -48,3 +48,19 @@ export default tseslint.config({
   },
 })
 ```
+
+# Admin Panel Usage
+
+- Login as admin: username `admin`, password `Admin123.` (from seed)
+- Admin menu appears under your user menu if your role is `Admin`.
+- Admin routes:
+  - `/admin`: dashboard
+  - `/admin/products`: list, create, update, delete products
+  - `/admin/about`: edit About page content
+  - `/admin/contact`: edit Contact page content
+
+API base: `http://localhost:5298/api`
+
+Notes:
+- Product CRUD endpoints require the `Admin` role.
+- Content endpoints: `GET /api/content/{key}`, `PUT /api/content/{key}` (Admin only for PUT).

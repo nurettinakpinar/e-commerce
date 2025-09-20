@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CircularProgress, Container, CssBaseline } from "@mui/material";
+import { CircularProgress, Container, CssBaseline, Box } from "@mui/material";
 import { Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,36 +8,67 @@ import { getCart } from "../features/cart/cartSlice";
 import { getUser } from "../features/account/accountSlice";
 import Header from "./Header";
 
-
 function App() {
 
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
 
   const initApp = async () => {
-    await dispatch(getUser())
-    await dispatch(getCart());
+    try {
+      await dispatch(getUser()).unwrap();
+    } catch (error) {
+      console.error("Failed to get user:", error);
+    }
+    try {
+      await dispatch(getCart()).unwrap();
+    } catch (error) {
+      console.error("Failed to get cart:", error);
+    }
   }
 
   useEffect(() => {
-
     initApp().then(() => setLoading(false));
-
   }, []);
 
-  if (loading) return <CircularProgress />
+  if (loading) return (
+    <Box sx={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100vh",
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"
+    }}>
+      <CircularProgress 
+        size={60} 
+        sx={{ 
+          color: "#D4AF37",
+          "& .MuiCircularProgress-circle": {
+            strokeLinecap: "round"
+          }
+        }} 
+      />
+    </Box>
+  )
 
   return (
     <>
-      <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
+      <ToastContainer 
+        position="bottom-right" 
+        hideProgressBar 
+        theme="colored"
+        toastStyle={{
+          backgroundColor: "#2d2d2d",
+          color: "white",
+          border: "1px solid #D4AF37"
+        }}
+      />
 
       <CssBaseline />
       <Header />
-      <Container>
+      <Box sx={{ minHeight: "calc(100vh - 64px)", backgroundColor: "#fafafa" }}>
         <Outlet />
-      </Container>
+      </Box>
     </>
-
   )
 }
 

@@ -14,4 +14,11 @@ public class Product
     public Boolean IsActive { get; set; }
     public string? ImageUrl { get; set; }
     public int Stock { get; set; }
+    
+    // Category relationship
+    public int? CategoryId { get; set; }
+    public Category? Category { get; set; }
+    
+    // Reviews relationship
+    public ICollection<Review>? Reviews { get; set; }
 }

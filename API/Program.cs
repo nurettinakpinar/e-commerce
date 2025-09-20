@@ -66,7 +66,12 @@ builder.Services.AddAuthentication(x =>
 // Add controllers to the application
 // This enables API endpoints to handle HTTP requests (GET, POST, PUT, DELETE, etc.).
 // Without this, the app won't recognize controllers and won't respond to API requests.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // Prevent circular reference errors when serializing related entities
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
