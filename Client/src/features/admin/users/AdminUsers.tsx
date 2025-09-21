@@ -22,6 +22,7 @@ interface AdminUser {
     email?: string;
     roles: string[];
     createdAt: string;
+    isLocked: boolean;
 }
 
 export default function AdminUsers() {

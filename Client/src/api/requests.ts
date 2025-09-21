@@ -74,6 +74,13 @@ const Catalog = {
     create: (body: any) => queries.post("products", body),
     update: (id: number, body: any) => queries.put(`products/${id}`, body),
     delete: (id: number) => queries.delete(`products/${id}`),
+    uploadImage: (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return axios.post('products/upload-image', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }).then(response => response.data);
+    }
 }
 
 const Errors = {
@@ -99,7 +106,11 @@ const Account = {
 const Order = {
     getOrders: () => queries.get("order/getOrders"),
     getOrder: (id: number) => queries.get(`order/getOrder/${id}`),
-    createOrder: (formData: any) => queries.post("order/createOrder", formData)
+    createOrder: (formData: any) => queries.post("order/createOrder", formData),
+    // Admin endpoints
+    getAllOrders: () => queries.get("order/admin/all"),
+    updateOrderStatus: (id: number, status: number) => queries.put(`order/admin/${id}/status`, { status }),
+    deleteOrder: (id: number) => queries.delete(`order/admin/${id}`)
 }
 
 const Review = {
@@ -134,6 +145,12 @@ const requests = {
         getAll: () => queries.get("seo"),
         update: (pageKey: string, body: any) => queries.put(`seo/${pageKey}`, body),
         delete: (pageKey: string) => queries.delete(`seo/${pageKey}`)
+    },
+    Admin: {
+        users: () => queries.get("admin/users"),
+        updateRoles: (id: string, roles: string[]) => queries.put(`admin/users/${id}/roles`, { roles }),
+        block: (id: string) => queries.post(`admin/users/${id}/block`, {}),
+        unblock: (id: string) => queries.post(`admin/users/${id}/unblock`, {})
     }
 }
 

@@ -1,4 +1,5 @@
 using API.Data;
+using API.DTO;
 using API.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -51,7 +52,7 @@ public class ReviewController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Review>> CreateReview(Review review)
+    public async Task<ActionResult<Review>> CreateReview(CreateReviewDto createReviewDto)
     {
         // Get current user
         var user = await _userManager.GetUserAsync(User);
@@ -59,7 +60,7 @@ public class ReviewController : ControllerBase
 
         // Check if user already reviewed this product
         var existingReview = await _context.Reviews
-            .FirstOrDefaultAsync(r => r.ProductId == review.ProductId && r.UserId == user.Id);
+            .FirstOrDefaultAsync(r => r.ProductId == createReviewDto.ProductId && r.UserId == user.Id);
         
         if (existingReview != null)
         {
@@ -67,12 +68,18 @@ public class ReviewController : ControllerBase
         }
 
         // Check if product exists
-        var product = await _context.Products.FindAsync(review.ProductId);
+        var product = await _context.Products.FindAsync(createReviewDto.ProductId);
         if (product == null) return NotFound("Ürün bulunamadı.");
 
-        review.UserId = user.Id;
-        review.UserName = user.Name ?? user.UserName!;
-        review.CreatedAt = DateTime.UtcNow;
+        var review = new Review
+        {
+            ProductId = createReviewDto.ProductId,
+            Rating = createReviewDto.Rating,
+            Comment = createReviewDto.Comment,
+            UserId = user.Id,
+            UserName = user.Name ?? user.UserName!,
+            CreatedAt = DateTime.UtcNow
+        };
 
         _context.Reviews.Add(review);
         await _context.SaveChangesAsync();

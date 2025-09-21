@@ -1,5 +1,5 @@
-import { AddShoppingCart, Favorite, Star } from "@mui/icons-material";
-import { 
+import { AddShoppingCart, Favorite, Star, KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
+import {
     Card, 
     CardMedia, 
     CardContent, 
@@ -10,7 +10,8 @@ import {
     Chip, 
     IconButton,
     Stack,
-    Rating
+    Rating,
+    MobileStepper
 } from "@mui/material";
 import { Link } from "react-router";
 import { IProduct } from "../../models/IProduct";
@@ -19,6 +20,7 @@ import { isFavorite, toggleFavorite } from "../../utils/favorites";
 import { currencyTRY } from "../../utils/formatCurrency";
 import { addItemToCart } from "../cart/cartSlice";
 import { useAppSelector, useAppDispatch } from "../../store/store";
+import requests from "../../api/requests";
 
 interface Props {
     product: IProduct
@@ -29,13 +31,40 @@ export default function Product({ product }: Props) {
     const { status } = useAppSelector(state => state.cart);
     const dispatch = useAppDispatch();
     const [fav, setFav] = useState(false);
+    const [reviewStats, setReviewStats] = useState<{averageRating: number, totalReviews: number}>({
+        averageRating: 0,
+        totalReviews: 0
+    });
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [images, setImages] = useState<string[]>([]);
 
     useEffect(() => {
         setFav(isFavorite(product.id));
-    }, [product.id]);
+        loadReviewStats();
+        
+        // Load product images
+        if (product.imageUrls) {
+            try {
+                const imageArray = JSON.parse(product.imageUrls);
+                setImages(Array.isArray(imageArray) ? imageArray : [product.imageUrl || ""]);
+            } catch {
+                setImages(product.imageUrl ? [product.imageUrl] : []);
+            }
+        } else {
+            setImages(product.imageUrl ? [product.imageUrl] : []);
+        }
+        setCurrentImageIndex(0);
+    }, [product.id, product.imageUrl, product.imageUrls]);
 
-    // Mock rating for display purposes
-    const rating = 4.5 + Math.random() * 0.5;
+    const loadReviewStats = async () => {
+        try {
+            const stats = await requests.Review.getProductStats(product.id);
+            setReviewStats(stats);
+        } catch (error) {
+            // If no reviews, keep default values
+            console.log("No reviews for product", product.id);
+        }
+    };
 
     return (
         <Card 
@@ -46,7 +75,10 @@ export default function Product({ product }: Props) {
                 transition: "all 0.3s ease-in-out",
                 "&:hover": {
                     transform: "translateY(-8px)",
-                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)"
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                    "& .nav-arrow": {
+                        opacity: 1
+                    }
                 }
             }}
         >
@@ -58,9 +90,99 @@ export default function Product({ product }: Props) {
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }} 
-                        image={`http://localhost:5298/images/${product.imageUrl}`} 
+                        image={images.length > 0 ? `http://localhost:5298/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
                     />
                 </Box>
+                
+                {/* Image Navigation - Only show on hover */}
+                {images.length > 1 && (
+                    <>
+                        <IconButton
+                            className="nav-arrow nav-arrow-left"
+                            sx={{
+                                position: "absolute",
+                                left: 8,
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                color: "white",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0, 0, 0, 0.8)"
+                                },
+                                width: 32,
+                                height: 32,
+                                opacity: 0,
+                                transition: "opacity 0.3s ease",
+                                zIndex: 2
+                            }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setCurrentImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+                            }}
+                        >
+                            <KeyboardArrowLeft />
+                        </IconButton>
+                        <IconButton
+                            className="nav-arrow nav-arrow-right"
+                            sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                color: "white",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0, 0, 0, 0.8)"
+                                },
+                                width: 32,
+                                height: 32,
+                                opacity: 0,
+                                transition: "opacity 0.3s ease",
+                                zIndex: 2
+                            }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setCurrentImageIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+                            }}
+                        >
+                            <KeyboardArrowRight />
+                        </IconButton>
+                        
+                        {/* Image Dots */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: 8,
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                display: "flex",
+                                gap: 0.5,
+                                zIndex: 2
+                            }}
+                        >
+                            {images.map((_, index) => (
+                                <Box
+                                    key={index}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setCurrentImageIndex(index);
+                                    }}
+                                    sx={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: "50%",
+                                        backgroundColor: index === currentImageIndex ? "white" : "rgba(255, 255, 255, 0.5)",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s"
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    </>
+                )}
                 <Chip
                     label="Yeni"
                     size="small"
@@ -111,22 +233,24 @@ export default function Product({ product }: Props) {
                     {product.name}
                 </Typography>
                 
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                    <Rating 
-                        value={rating} 
-                        precision={0.1} 
-                        size="small" 
-                        readOnly
-                        sx={{
-                            "& .MuiRating-iconFilled": {
-                                color: "#FFD700"
-                            }
-                        }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                        ({rating.toFixed(1)})
-                    </Typography>
-                </Stack>
+                {reviewStats.totalReviews > 0 && (
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                        <Rating 
+                            value={reviewStats.averageRating} 
+                            precision={0.1} 
+                            size="small" 
+                            readOnly
+                            sx={{
+                                "& .MuiRating-iconFilled": {
+                                    color: "#FFD700"
+                                }
+                            }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                            ({reviewStats.averageRating.toFixed(1)}) • {reviewStats.totalReviews} değerlendirme
+                        </Typography>
+                    </Stack>
+                )}
                 
                 <Typography 
                     variant="h5" 

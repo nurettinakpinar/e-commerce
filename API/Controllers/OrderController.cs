@@ -2,6 +2,7 @@ using API.Data;
 using API.DTO;
 using API.Entity;
 using API.Extensions;
+using static API.Entity.Order;
 using Iyzipay;
 using Iyzipay.Model;
 using Iyzipay.Request;
@@ -32,6 +33,59 @@ namespace API.Controllers
                         .OrderToDTO() //TODO: Search Automapper 
                         .Where(i => i.CustomerId == User.Identity!.Name)
                         .ToListAsync();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/all")]
+        public async Task<ActionResult<List<OrderDTO>>> GetAllOrders()
+        {
+            return await _context.Orders
+                        .Include(i => i.OrderItems)
+                        .OrderToDTO()
+                        .OrderByDescending(o => o.OrderDate)
+                        .ToListAsync();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("admin/{id}/status")]
+        public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto statusDto)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+
+            order.OrderStatus = (OrderStatus)statusDto.Status;
+            
+            var result = await _context.SaveChangesAsync() > 0;
+            if (result) return NoContent();
+            
+            return BadRequest(new ProblemDetails { Title = "Problem updating order status" });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("admin/{id}")]
+        public async Task<ActionResult> DeleteOrder(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+                
+            if (order == null) return NotFound();
+
+            // Restore stock
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                }
+            }
+
+            _context.Orders.Remove(order);
+            var result = await _context.SaveChangesAsync() > 0;
+            
+            if (result) return NoContent();
+            return BadRequest(new ProblemDetails { Title = "Problem deleting order" });
         }
 
         [HttpGet("{id}", Name = "GetOrder")]

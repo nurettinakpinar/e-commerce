@@ -43,9 +43,9 @@ namespace API.Entity
 
     public enum OrderStatus
     {
-        Pending,
-        Approved,
-        PaymentFailed,
-        Completed,
+        Pending = 0,    // Beklemede
+        Shipped = 1,    // Kargoda  
+        Delivered = 2,  // Teslim Edildi
+        Cancelled = 3   // İptal
     }
 }

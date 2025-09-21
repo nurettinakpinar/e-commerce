@@ -152,8 +152,8 @@ export default function Header() {
                     boxShadow: "0 4px 20px rgba(0,0,0,0.3)"
                 }}
             >
-                <Container maxWidth="lg">
-                    <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
+                <Container maxWidth="xl">
+                    <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 1.5, px: 2 }}>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                             {/* Logo Section */}
                             <Box sx={{ display: "flex", alignItems: "center", mr: 4 }}>
@@ -179,7 +179,7 @@ export default function Header() {
 
                             {/* Desktop Navigation */}
                             {!isMobile && (
-                                <Stack direction="row" spacing={1}>
+                                <Stack direction="row" spacing={2}>
                                     {links.map(link => (
                                         <Button 
                                             key={link.to} 
@@ -187,9 +187,12 @@ export default function Header() {
                                             to={link.to} 
                                             sx={{
                                                 ...navStyles,
-                                                px: 2,
-                                                py: 1,
-                                                borderRadius: 2
+                                                px: 3,
+                                                py: 1.5,
+                                                borderRadius: 3,
+                                                fontSize: "1rem",
+                                                fontWeight: 600,
+                                                textTransform: "none"
                                             }}
                                         >
                                             {link.title}
@@ -206,12 +209,16 @@ export default function Header() {
                                 to="/cart" 
                                 size="large" 
                                 sx={{
-                                    mr: 2,
+                                    mr: 3,
                                     color: "white",
+                                    p: 1.5,
+                                    borderRadius: 2,
                                     "&:hover": {
                                         backgroundColor: "rgba(212, 175, 55, 0.1)",
-                                        color: "#D4AF37"
-                                    }
+                                        color: "#D4AF37",
+                                        transform: "scale(1.05)"
+                                    },
+                                    transition: "all 0.3s ease"
                                 }}
                             >
                                 <Badge 
@@ -237,9 +244,18 @@ export default function Header() {
                                         endIcon={<KeyboardArrowDown />} 
                                         sx={{
                                             ...navStyles,
-                                            px: 2,
-                                            py: 1,
-                                            borderRadius: 2
+                                            px: 3,
+                                            py: 1.5,
+                                            borderRadius: 3,
+                                            fontSize: "1rem",
+                                            fontWeight: 600,
+                                            textTransform: "none",
+                                            border: "1px solid rgba(212, 175, 55, 0.3)",
+                                            "&:hover": {
+                                                backgroundColor: "rgba(212, 175, 55, 0.1)",
+                                                borderColor: "#D4AF37",
+                                                color: "#D4AF37"
+                                            }
                                         }}
                                     >
                                         {user.name}
@@ -314,22 +330,52 @@ export default function Header() {
                             ) : (
                                 <>
                                     {!isMobile && (
-                                        <Stack direction="row" spacing={1}>
-                                            {authLinks.map(link => (
-                                                <Button 
-                                                    key={link.to} 
-                                                    component={NavLink} 
-                                                    to={link.to} 
-                                                    sx={{
-                                                        ...navStyles,
-                                                        px: 2,
-                                                        py: 1,
-                                                        borderRadius: 2
-                                                    }}
-                                                >
-                                                    {link.title}
-                                                </Button>
-                                            ))}
+                                        <Stack direction="row" spacing={2}>
+                                            <Button 
+                                                component={NavLink} 
+                                                to="/login"
+                                                variant="outlined"
+                                                sx={{
+                                                    color: "white",
+                                                    borderColor: "rgba(212, 175, 55, 0.5)",
+                                                    px: 3,
+                                                    py: 1.5,
+                                                    borderRadius: 3,
+                                                    fontSize: "1rem",
+                                                    fontWeight: 600,
+                                                    textTransform: "none",
+                                                    "&:hover": {
+                                                        borderColor: "#D4AF37",
+                                                        backgroundColor: "rgba(212, 175, 55, 0.1)",
+                                                        color: "#D4AF37"
+                                                    }
+                                                }}
+                                            >
+                                                Giriş Yap
+                                            </Button>
+                                            <Button 
+                                                component={NavLink} 
+                                                to="/register"
+                                                variant="contained"
+                                                sx={{
+                                                    background: "linear-gradient(45deg, #D4AF37, #FFD700)",
+                                                    color: "black",
+                                                    px: 3,
+                                                    py: 1.5,
+                                                    borderRadius: 3,
+                                                    fontSize: "1rem",
+                                                    fontWeight: 600,
+                                                    textTransform: "none",
+                                                    "&:hover": {
+                                                        background: "linear-gradient(45deg, #B8941F, #E6C200)",
+                                                        transform: "translateY(-1px)",
+                                                        boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)"
+                                                    },
+                                                    transition: "all 0.3s ease"
+                                                }}
+                                            >
+                                                Kayıt Ol
+                                            </Button>
                                         </Stack>
                                     )}
                                 </>

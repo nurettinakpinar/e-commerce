@@ -20,7 +20,9 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Avatar
+    Avatar,
+    ImageList,
+    ImageListItem
 } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router";
@@ -36,7 +38,9 @@ import {
     CheckCircle,
     Inventory,
     RateReview,
-    Person
+    Person,
+    KeyboardArrowLeft,
+    KeyboardArrowRight
 } from "@mui/icons-material";
 import { isFavorite, toggleFavorite } from "../../utils/favorites";
 import { currencyTRY } from "../../utils/formatCurrency";
@@ -78,6 +82,10 @@ export default function ProductDetailsPage() {
     const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
     const [reviewLoading, setReviewLoading] = useState(false);
+    
+    // Gallery states
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [images, setImages] = useState<string[]>([]);
     const [fav, setFav] = useState(false);
 
     // Define functions before useEffect with useCallback
@@ -102,15 +110,31 @@ export default function ProductDetailsPage() {
     }, [product]);
 
     const handleSubmitReview = async () => {
-        if (!product || !user) return;
+        if (!product || !user) {
+            alert('Değerlendirme yapabilmek için giriş yapmalısınız.');
+            return;
+        }
+        
+        if (!newReview.comment.trim()) {
+            alert('Lütfen bir yorum yazın.');
+            return;
+        }
         
         setReviewLoading(true);
         try {
-            await requests.Review.create({
+            console.log('Submitting review:', {
                 productId: product.id,
                 rating: newReview.rating,
                 comment: newReview.comment
             });
+            
+            const result = await requests.Review.create({
+                productId: product.id,
+                rating: newReview.rating,
+                comment: newReview.comment
+            });
+            
+            console.log('Review submitted successfully:', result);
             
             // Reload reviews and stats
             await loadReviews();
@@ -119,8 +143,12 @@ export default function ProductDetailsPage() {
             // Reset form and close dialog
             setNewReview({ rating: 5, comment: '' });
             setReviewDialogOpen(false);
-        } catch (error) {
+            
+            alert('Değerlendirmeniz başarıyla gönderildi!');
+        } catch (error: any) {
             console.error('Failed to submit review:', error);
+            const errorMessage = error.response?.data?.title || error.message || 'Değerlendirme gönderilemedi.';
+            alert(errorMessage);
         } finally {
             setReviewLoading(false);
         }
@@ -130,6 +158,25 @@ export default function ProductDetailsPage() {
         if(!product && id)
             dispatch(fetchProductById(parseInt(id)));
     }, [id, product, dispatch]);
+    
+    useEffect(() => {
+        if (product) {
+            setFav(isFavorite(product.id));
+            
+            // Load product images
+            if (product.imageUrls) {
+                try {
+                    const imageArray = JSON.parse(product.imageUrls);
+                    setImages(Array.isArray(imageArray) ? imageArray : [product.imageUrl || ""]);
+                } catch {
+                    setImages(product.imageUrl ? [product.imageUrl] : []);
+                }
+            } else {
+                setImages(product.imageUrl ? [product.imageUrl] : []);
+            }
+            setCurrentImageIndex(0);
+        }
+    }, [product]);
 
     // Load reviews when product is loaded
     useEffect(() => {
@@ -177,9 +224,10 @@ export default function ProductDetailsPage() {
                 {/* Product Image */}
                 <Grid2 size={{ xs: 12, md: 6 }}>
                     <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
-                        <Box sx={{ position: "relative" }}>
+                        {/* Main Image */}
+                        <Box sx={{ position: "relative", mb: 2 }}>
                             <img 
-                                src={`http://localhost:5298/images/${product.imageUrl}`} 
+                                src={images.length > 0 ? `http://localhost:5298/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
                                 alt={product.name}
                                 style={{ 
                                     width: "100%", 
@@ -188,6 +236,53 @@ export default function ProductDetailsPage() {
                                     borderRadius: "12px"
                                 }} 
                             />
+                            
+                            {/* Navigation Arrows */}
+                            {images.length > 1 && (
+                                <>
+                                    <IconButton
+                                        sx={{
+                                            position: "absolute",
+                                            left: 16,
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                            color: "white",
+                                            "&:hover": {
+                                                backgroundColor: "rgba(0, 0, 0, 0.8)"
+                                            },
+                                            width: 48,
+                                            height: 48
+                                        }}
+                                        onClick={() => {
+                                            setCurrentImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+                                        }}
+                                    >
+                                        <KeyboardArrowLeft fontSize="large" />
+                                    </IconButton>
+                                    <IconButton
+                                        sx={{
+                                            position: "absolute",
+                                            right: 16,
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                            color: "white",
+                                            "&:hover": {
+                                                backgroundColor: "rgba(0, 0, 0, 0.8)"
+                                            },
+                                            width: 48,
+                                            height: 48
+                                        }}
+                                        onClick={() => {
+                                            setCurrentImageIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+                                        }}
+                                    >
+                                        <KeyboardArrowRight fontSize="large" />
+                                    </IconButton>
+                                </>
+                            )}
+                            
                             <Chip
                                 label="Sertifikalı"
                                 icon={<Verified />}
@@ -253,6 +348,40 @@ export default function ProductDetailsPage() {
                                 </IconButton>
                             </Stack>
                         </Box>
+                        
+                        {/* Thumbnail Images */}
+                        {images.length > 1 && (
+                            <Box sx={{ display: "flex", gap: 1, overflowX: "auto", pb: 1 }}>
+                                {images.map((image, index) => (
+                                    <Box
+                                        key={index}
+                                        onClick={() => setCurrentImageIndex(index)}
+                                        sx={{
+                                            minWidth: 80,
+                                            height: 80,
+                                            borderRadius: 1,
+                                            overflow: "hidden",
+                                            cursor: "pointer",
+                                            border: index === currentImageIndex ? "3px solid #D4AF37" : "2px solid transparent",
+                                            transition: "all 0.2s",
+                                            "&:hover": {
+                                                transform: "scale(1.05)"
+                                            }
+                                        }}
+                                    >
+                                        <img
+                                            src={`http://localhost:5298/images/${image}`}
+                                            alt={`${product.name} ${index + 1}`}
+                                            style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "cover"
+                                            }}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
                     </Paper>
                 </Grid2>
 

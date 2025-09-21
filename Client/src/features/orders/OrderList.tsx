@@ -8,21 +8,13 @@ import {
     IconButton, 
     Paper, 
     Stack, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
     Typography,
     Container,
     Box,
     Card,
     CardContent,
     Chip,
-    Grid2,
-    Divider,
-    Alert
+    Grid2
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Order } from "../../models/IOrder";
@@ -43,38 +35,36 @@ import {
     LocationOn
 } from "@mui/icons-material";
 
-const orderStatus = ["Beklemede", "Onaylandı", "Ödeme Hatası", "Tamamlandı"];
-
-// Status colors and icons
+// Status colors and icons - Updated to match API OrderStatus enum
 const getStatusInfo = (status: number) => {
     switch (status) {
-        case 0: // Beklemede
+        case 0: // Pending - Beklemede
             return { 
                 color: '#ff9800', 
                 icon: <Schedule />, 
                 label: 'Beklemede',
                 bgColor: 'rgba(255, 152, 0, 0.1)' 
             };
-        case 1: // Onaylandı
+        case 1: // Shipped - Kargoda
             return { 
                 color: '#2196f3', 
-                icon: <CheckCircle />, 
-                label: 'Onaylandı',
+                icon: <LocalShipping />, 
+                label: 'Kargoda',
                 bgColor: 'rgba(33, 150, 243, 0.1)' 
             };
-        case 2: // Ödeme Hatası
-            return { 
-                color: '#f44336', 
-                icon: <Error />, 
-                label: 'Ödeme Hatası',
-                bgColor: 'rgba(244, 67, 54, 0.1)' 
-            };
-        case 3: // Tamamlandı
+        case 2: // Delivered - Teslim Edildi
             return { 
                 color: '#4caf50', 
                 icon: <CheckCircle />, 
-                label: 'Tamamlandı',
+                label: 'Teslim Edildi',
                 bgColor: 'rgba(76, 175, 80, 0.1)' 
+            };
+        case 3: // Cancelled - İptal Edildi
+            return { 
+                color: '#f44336', 
+                icon: <Error />, 
+                label: 'İptal Edildi',
+                bgColor: 'rgba(244, 67, 54, 0.1)' 
             };
         default:
             return { 
@@ -276,23 +266,6 @@ export default function OrderList() {
                                             >
                                                 Detayları Görüntüle
                                             </Button>
-                                            
-                                            {order.orderStatus === 3 && ( // Tamamlandı
-                                                <Button 
-                                                    variant="outlined"
-                                                    size="small"
-                                                    sx={{
-                                                        borderColor: "#D4AF37",
-                                                        color: "#D4AF37",
-                                                        "&:hover": {
-                                                            borderColor: "#FFD700",
-                                                            backgroundColor: "rgba(212, 175, 55, 0.1)"
-                                                        }
-                                                    }}
-                                                >
-                                                    Tekrar Sipariş Ver
-                                    </Button>
-                                            )}
                                         </Stack>
                                     </Grid2>
                                 </Grid2>
@@ -495,5 +468,4 @@ export default function OrderList() {
             )}
         </Container>
     );
-
 }

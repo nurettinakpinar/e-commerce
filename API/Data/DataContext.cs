@@ -25,6 +25,23 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure decimal precision for SQL Server
+        modelBuilder.Entity<Order>()
+            .Property(e => e.SubTotal)
+            .HasPrecision(18, 2);
+        
+        modelBuilder.Entity<Order>()
+            .Property(e => e.DeliveryFee)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(e => e.Price)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Product>()
+            .Property(e => e.Price)
+            .HasPrecision(18, 2);
+
         modelBuilder.Entity<Product>().HasData(
             new List<Product>() {
                  new Product()

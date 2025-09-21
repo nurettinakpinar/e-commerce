@@ -13,6 +13,7 @@ public class Product
     public Decimal Price { get; set; }
     public Boolean IsActive { get; set; }
     public string? ImageUrl { get; set; }
+    public string? ImageUrls { get; set; } // JSON array of image URLs
     public int Stock { get; set; }
     
     // Category relationship

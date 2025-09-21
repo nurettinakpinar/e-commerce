@@ -7,15 +7,20 @@ import {
     Stack,
     Card,
     CardContent,
-    LinearProgress
+    LinearProgress,
+    Button
 } from "@mui/material";
 import { 
     TrendingUp, 
     People, 
     Inventory, 
     ShoppingCart,
-    AttachMoney
+    AttachMoney,
+    Add,
+    List,
+    Edit
 } from "@mui/icons-material";
+import { useNavigate } from "react-router";
 import requests from "../../api/requests";
 
 interface Stats {
@@ -28,20 +33,22 @@ interface Stats {
 export default function AdminDashboard() {
     const [stats, setStats] = useState<Stats>({ totalProducts: 0, totalOrders: 0, totalUsers: 0, totalRevenue: 0 });
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function loadStats() {
             try {
-                const [products, orders] = await Promise.all([
+                const [products, orders, users] = await Promise.all([
                     requests.Catalog.list(),
-                    requests.Order.getOrders()
+                    requests.Order.getAllOrders(), // Admin endpoint kullan
+                    requests.Admin.users()
                 ]);
                 
                 setStats({
                     totalProducts: products.length,
                     totalOrders: orders.length,
-                    totalUsers: 0, // Bu API endpoint'i henüz yok
-                    totalRevenue: orders.reduce((sum: number, order: any) => sum + order.total, 0)
+                    totalUsers: users.length,
+                    totalRevenue: orders.reduce((sum: number, order: any) => sum + ((order.subTotal || 0) + (order.deliveryFee || 0)), 0)
                 });
             } catch (error) {
                 console.error("Stats yüklenemedi:", error);
@@ -74,7 +81,7 @@ export default function AdminDashboard() {
         },
         {
             title: "Aktif Kullanıcılar",
-            value: stats.totalUsers || "N/A",
+            value: stats.totalUsers,
             icon: <People sx={{ fontSize: 40, color: "#FF9800" }} />,
             color: "#FF9800"
         }
@@ -135,15 +142,30 @@ export default function AdminDashboard() {
                             Hızlı İşlemler
                         </Typography>
                         <Stack spacing={2}>
-                            <Typography variant="body2" color="text.secondary">
-                                • Yeni ürün ekle
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                • Siparişleri kontrol et
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                • İçerikleri güncelle
-                            </Typography>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<Add />}
+                                onClick={() => navigate('/admin/products')}
+                                sx={{ justifyContent: "flex-start" }}
+                            >
+                                Yeni ürün ekle
+                            </Button>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<List />}
+                                onClick={() => navigate('/admin/orders')}
+                                sx={{ justifyContent: "flex-start" }}
+                            >
+                                Siparişleri kontrol et
+                            </Button>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<Edit />}
+                                onClick={() => navigate('/admin/about')}
+                                sx={{ justifyContent: "flex-start" }}
+                            >
+                                İçerikleri güncelle
+                            </Button>
                         </Stack>
                     </Paper>
                 </Grid2>

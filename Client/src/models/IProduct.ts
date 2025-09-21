@@ -6,6 +6,7 @@ export interface IProduct
     price: number,
     isActive: Boolean,
     imageUrl?: string,
+    imageUrls?: string, // JSON string of image array
     stock?: number,
     categoryId?: number | null,
     category?: {

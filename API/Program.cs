@@ -17,7 +17,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     var config = builder.Configuration;
     var connectionString = config.GetConnectionString("defaultConnection");
 
-    options.UseSqlite(connectionString);
+    options.UseSqlServer(connectionString);
 });
 
 // Register CORS service to allow cross-origin requests (configured later in the pipeline)

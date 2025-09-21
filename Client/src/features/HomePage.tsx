@@ -23,6 +23,7 @@ import SEOHead from "../components/SEOHead";
 import { useEffect } from "react";
 import { fetchProducts, productSelector } from "../features/catalog/catalogSlice";
 import { currencyTRY } from "../utils/formatCurrency";
+import Product from "./catalog/Product";
 
 export default function HomePage() {
     const dispatch = useAppDispatch();
@@ -35,8 +36,8 @@ export default function HomePage() {
         }
     }, [isLoaded, dispatch]);
 
-    // İlk 3 ürünü öne çıkan olarak göster
-    const featuredProducts = products.slice(0, 3);
+    // İlk 6 ürünü öne çıkan olarak göster
+    const featuredProducts = products.slice(0, 6);
 
     return (
         <Box>
@@ -56,9 +57,9 @@ export default function HomePage() {
                     overflow: "hidden"
                 }}
             >
-                <Container maxWidth="lg">
-                    <Grid2 container spacing={4} alignItems="center">
-                        <Grid2 size={{ xs: 12, md: 6 }}>
+                <Container maxWidth="xl">
+                    <Grid2 container spacing={6} alignItems="center" sx={{ px: 2 }}>
+                        <Grid2 size={{ xs: 12, md: 7 }}>
                             <Typography variant="h2" component="h1" sx={{ 
                                 fontWeight: 700, 
                                 mb: 3,
@@ -112,7 +113,7 @@ export default function HomePage() {
                                 </Button>
                             </Stack>
                         </Grid2>
-                        <Grid2 size={{ xs: 12, md: 6 }}>
+                        <Grid2 size={{ xs: 12, md: 5 }}>
                             <Box
                                 sx={{
                                     display: "flex",
@@ -145,7 +146,7 @@ export default function HomePage() {
 
             {/* Featured Products Section */}
             <Box sx={{ backgroundColor: "#f8f9fa", py: 8 }}>
-                <Container maxWidth="lg">
+                <Container maxWidth="xl">
                     <Typography variant="h3" component="h2" textAlign="center" sx={{ mb: 2, fontWeight: 600 }}>
                         Öne Çıkan Ürünler
                     </Typography>
@@ -158,68 +159,10 @@ export default function HomePage() {
                             <CircularProgress size={60} sx={{ color: "#D4AF37" }} />
                         </Box>
                     ) : (
-                        <Grid2 container spacing={4}>
-                            {featuredProducts.map((product, index) => (
-                                <Grid2 key={product.id} size={{ xs: 12, md: 4 }}>
-                                    <Card
-                                        sx={{
-                                            height: "100%",
-                                            transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-                                            "&:hover": {
-                                                transform: "translateY(-8px)",
-                                                boxShadow: 8
-                                            }
-                                        }}
-                                    >
-                                        <Box sx={{ position: "relative" }}>
-                                            <CardMedia
-                                                component="img"
-                                                height="300"
-                                                image={`http://localhost:5298/images/${product.imageUrl}`}
-                                                alt={product.name}
-                                                sx={{ objectFit: "cover" }}
-                                            />
-                                            <Chip
-                                                label={index === 0 ? "Yeni" : index === 1 ? "Popüler" : "Özel"}
-                                                size="small"
-                                                sx={{
-                                                    position: "absolute",
-                                                    top: 16,
-                                                    right: 16,
-                                                    backgroundColor: "#D4AF37",
-                                                    color: "black",
-                                                    fontWeight: 600
-                                                }}
-                                            />
-                                            <IconButton
-                                                sx={{
-                                                    position: "absolute",
-                                                    top: 16,
-                                                    left: 16,
-                                                    backgroundColor: "rgba(255, 255, 255, 0.9)",
-                                                    "&:hover": {
-                                                        backgroundColor: "rgba(255, 255, 255, 1)"
-                                                    }
-                                                }}
-                                            >
-                                                <Favorite sx={{ color: "#D4AF37" }} />
-                                            </IconButton>
-                                        </Box>
-                                        <CardContent>
-                                            <Typography variant="h6" component="h3" sx={{ mb: 1, fontWeight: 600 }}>
-                                                {product.name}
-                                            </Typography>
-                                            <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                                                <Star sx={{ color: "#FFD700", fontSize: 20 }} />
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {(4.5 + Math.random() * 0.5).toFixed(1)}
-                                                </Typography>
-                                            </Stack>
-                                            <Typography variant="h5" sx={{ color: "#D4AF37", fontWeight: 700 }}>
-                                                {currencyTRY.format(product.price)}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
+                        <Grid2 container spacing={4} sx={{ px: 2 }}>
+                            {featuredProducts.map((product) => (
+                                <Grid2 key={product.id} size={{ xs: 12, sm: 6, md: 4, xl: 2 }}>
+                                    <Product product={product} />
                                 </Grid2>
                             ))}
                         </Grid2>
@@ -256,7 +199,7 @@ export default function HomePage() {
                     py: 8
                 }}
             >
-                <Container maxWidth="md" sx={{ textAlign: "center" }}>
+                <Container maxWidth="lg" sx={{ textAlign: "center" }}>
                     <Typography variant="h3" component="h2" sx={{ mb: 3, fontWeight: 700 }}>
                         Özel Tasarım Mücevherler
                     </Typography>

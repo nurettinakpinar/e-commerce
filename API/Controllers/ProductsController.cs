@@ -3,6 +3,7 @@ using API.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace API.Controllers;
 
@@ -67,6 +68,7 @@ public class ProductsController : ControllerBase
         product.Name = updated.Name;
         product.Description = updated.Description;
         product.ImageUrl = updated.ImageUrl;
+        product.ImageUrls = updated.ImageUrls;
         product.Price = updated.Price;
         product.IsActive = updated.IsActive;
         product.Stock = updated.Stock;
@@ -74,6 +76,47 @@ public class ProductsController : ControllerBase
 
         await _context.SaveChangesAsync();
         return NoContent();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded");
+
+        // Check file size (5MB limit)
+        if (file.Length > 5 * 1024 * 1024)
+            return BadRequest("File size too large. Maximum 5MB allowed.");
+
+        // Check file type
+        var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
+        if (!allowedTypes.Contains(file.ContentType.ToLower()))
+            return BadRequest("Invalid file type. Only images are allowed.");
+
+        try
+        {
+            // Create images directory if it doesn't exist
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            // Generate unique filename
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsPath, fileName);
+
+            // Save file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { fileName });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error uploading file: {ex.Message}");
+        }
     }
 
     [Authorize(Roles = "Admin")]
