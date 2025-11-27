@@ -121,7 +121,7 @@ export default function AdminSeo() {
                     onChange={(_, newValue) => setCurrentTab(newValue)}
                     variant="fullWidth"
                 >
-                    {seoPages.map((page, index) => (
+                    {seoPages.map((page) => (
                         <Tab key={page.key} label={page.label} />
                     ))}
                 </Tabs>

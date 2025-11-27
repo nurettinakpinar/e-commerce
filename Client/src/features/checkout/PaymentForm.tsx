@@ -5,7 +5,6 @@ import {
     Box, 
     Card, 
     CardContent, 
-    Stack,
     Alert,
     InputAdornment,
     FormControl,
@@ -23,7 +22,7 @@ import {
 
 export default function PaymentForm() {
 
-    const { register, formState: { errors }, watch } = useFormContext();
+    const { register, formState: { errors } } = useFormContext();
 
     // Helper functions for validation
     const validateCardNumber = (value: string) => {
@@ -49,11 +48,6 @@ export default function PaymentForm() {
         const currentYear = new Date().getFullYear();
         if (year < currentYear || year > currentYear + 20) return "Geçerli bir yıl giriniz";
         return true;
-    };
-
-    // Format card number with spaces
-    const formatCardNumber = (value: string) => {
-        return value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
     };
 
     const currentYear = new Date().getFullYear();
@@ -105,7 +99,7 @@ export default function PaymentForm() {
                                 label="Kart Sahibinin Adı Soyadı"
                                 fullWidth
                                 error={!!errors.cardname}
-                                helperText={errors.cardname?.message}
+                                helperText={errors.cardname?.message === "string" ? errors.cardname.message : ""}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -128,28 +122,33 @@ export default function PaymentForm() {
 
                         {/* Card Number */}
                         <Grid2 size={{ xs: 12 }}>
-                            <TextField 
-                                {...register("cardnumber", { 
-                                    required: "Kart numarasını giriniz",
-                                    validate: validateCardNumber
-                                })}
-                                label="Kart Numarası"
-                                fullWidth
-                                placeholder="1234 5678 9012 3456"
-                                error={!!errors.cardnumber}
-                                helperText={errors.cardnumber?.message || "16 haneli kart numaranızı giriniz"}
-                                inputProps={{ maxLength: 19 }}
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        "&:hover fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
+                            <TextField
+                                    {...register("cardnumber", { 
+                                        required: "Kart numarasını giriniz",
+                                        validate: validateCardNumber
+                                    })}
+                                    label="Kart Numarası"
+                                    fullWidth
+                                    placeholder="1234 5678 9012 3456"
+                                    error={!!errors.cardnumber}
+                                    helperText={
+                                        typeof errors.cardnumber?.message === "string"
+                                            ? errors.cardnumber.message
+                                            : "16 haneli kart numaranızı giriniz"
                                     }
-                                }}
-                            />
+                                    inputProps={{ maxLength: 19 }}
+                                    sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                            "&:hover fieldset": {
+                                                borderColor: "#D4AF37",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "#D4AF37",
+                                            },
+                                        }
+                                    }}
+                                />
+
                         </Grid2>
 
                         {/* Expiry Date */}
@@ -185,11 +184,12 @@ export default function PaymentForm() {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                {errors.cardexpiremonth && (
-                                    <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
-                                        {errors.cardexpiremonth.message}
-                                    </Typography>
-                                )}
+                                    {errors.cardexpiremonth && (
+                                        <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
+                                            {typeof errors.cardexpiremonth.message === "string" ? errors.cardexpiremonth.message : null}
+                                        </Typography>
+                                    )}
+
                             </FormControl>
                         </Grid2>
 
@@ -222,7 +222,7 @@ export default function PaymentForm() {
                                 </Select>
                                 {errors.cardexpireyear && (
                                     <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
-                                        {errors.cardexpireyear.message}
+                                              {typeof errors.cardexpireyear.message === "string"  ? errors.cardexpireyear.message : ""}
                                     </Typography>
                                 )}
                             </FormControl>
@@ -230,7 +230,7 @@ export default function PaymentForm() {
 
                         {/* CVC */}
                         <Grid2 size={{ xs: 12, md: 4 }}>
-                            <TextField 
+                            <TextField
                                 {...register("cardcvc", { 
                                     required: "Güvenlik kodunu giriniz",
                                     validate: validateCVC
@@ -239,7 +239,11 @@ export default function PaymentForm() {
                                 fullWidth
                                 placeholder="123"
                                 error={!!errors.cardcvc}
-                                helperText={errors.cardcvc?.message || "Kartın arkasındaki 3 haneli kod"}
+                                helperText={
+                                    typeof errors.cardcvc?.message === "string"
+                                        ? errors.cardcvc.message
+                                        : "Kartın arkasındaki 3 haneli kod"
+                                }
                                 inputProps={{ maxLength: 4 }}
                                 InputProps={{
                                     startAdornment: (

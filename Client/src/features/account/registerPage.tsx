@@ -1,4 +1,4 @@
-import { PersonAdd, Diamond } from "@mui/icons-material";
+import { Diamond } from "@mui/icons-material";
 import { 
     Avatar, 
     Box, 

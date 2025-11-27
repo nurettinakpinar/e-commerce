@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=nurettin123
+    ports:
+      - "1433:1433"
+    networks:
+      - appnet
+
+  api:
+    build:
+      context: ./API
+    container_name: dotnet_api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+    networks:
+      - appnet
+
+  client:
+    build:
+      context: ./Client
+    container_name: react_client
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

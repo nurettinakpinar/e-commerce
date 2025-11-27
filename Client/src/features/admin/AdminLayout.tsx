@@ -1,5 +1,4 @@
 import { 
-    Box, 
     Container, 
     Paper, 
     Typography, 
@@ -10,8 +9,6 @@ import {
     ListItemButton,
     Divider,
     Grid2,
-    useTheme,
-    useMediaQuery
 } from "@mui/material";
 import { 
     Dashboard,
@@ -40,8 +37,6 @@ const menuItems = [
 
 export default function AdminLayout() {
     const location = useLocation();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <Container maxWidth="xl" sx={{ py: 3 }}>

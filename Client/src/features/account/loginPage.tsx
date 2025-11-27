@@ -1,4 +1,4 @@
-import { LockOutlined, Diamond } from "@mui/icons-material";
+import { Diamond } from "@mui/icons-material";
 import { 
     Avatar, 
     Box, 
@@ -8,7 +8,6 @@ import {
     TextField, 
     Typography, 
     Stack,
-    Alert,
     Divider
 } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";

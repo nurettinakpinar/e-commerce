@@ -59,7 +59,7 @@ export default tseslint.config({
   - `/admin/about`: edit About page content
   - `/admin/contact`: edit Contact page content
 
-API base: `http://localhost:5298/api`
+API base: `${import.meta.env.VITE_API_URL}/api`
 
 Notes:
 - Product CRUD endpoints require the `Admin` role.

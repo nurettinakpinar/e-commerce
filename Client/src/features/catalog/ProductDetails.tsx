@@ -21,8 +21,6 @@ import {
     DialogContent,
     DialogActions,
     Avatar,
-    ImageList,
-    ImageListItem
 } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router";
@@ -227,7 +225,7 @@ export default function ProductDetailsPage() {
                         {/* Main Image */}
                         <Box sx={{ position: "relative", mb: 2 }}>
                             <img 
-                                src={images.length > 0 ? `http://localhost:5298/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
+                                src={images.length > 0 ? `${import.meta.env.VITE_API_URL}/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
                                 alt={product.name}
                                 style={{ 
                                     width: "100%", 
@@ -370,7 +368,7 @@ export default function ProductDetailsPage() {
                                         }}
                                     >
                                         <img
-                                            src={`http://localhost:5298/images/${image}`}
+                                            src={`${import.meta.env.VITE_API_URL}/images/${image}`}
                                             alt={`${product.name} ${index + 1}`}
                                             style={{
                                                 width: "100%",

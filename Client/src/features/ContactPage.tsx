@@ -19,7 +19,6 @@ import {
     Send,
     WhatsApp,
     Instagram,
-    Facebook
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import requests from "../api/requests";

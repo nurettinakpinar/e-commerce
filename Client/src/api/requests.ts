@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { router } from "../Router/Routes";
 import { store } from "../store/store";
 
-axios.defaults.baseURL = "http://localhost:5298/api/";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(request => {

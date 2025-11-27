@@ -2,7 +2,6 @@ import {
     Box, 
     Button, 
     Grid2, 
-    Paper, 
     Stack, 
     Step, 
     StepLabel, 
@@ -13,7 +12,6 @@ import {
     CardContent,
     Divider,
     Alert,
-    Chip
 } from "@mui/material";
 import Info from "./Info";
 import AddressForm from "./AddressForm";
@@ -23,11 +21,8 @@ import { useState } from "react";
 import { 
     ChevronLeftRounded, 
     ChevronRightRounded, 
-    Inventory,
     Diamond,
-    CheckCircle,
-    Security,
-    LocalShipping
+    CheckCircle
 } from "@mui/icons-material";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import requests from "../../api/requests";

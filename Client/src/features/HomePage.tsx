@@ -4,25 +4,17 @@ import {
     Button, 
     Container, 
     Grid2, 
-    Card, 
-    CardContent, 
-    CardMedia,
     Stack,
-    Chip,
-    IconButton,
     CircularProgress
 } from "@mui/material";
 import { Link } from "react-router";
 import { 
     Diamond, 
-    Favorite, 
-    Star
 } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import SEOHead from "../components/SEOHead";
 import { useEffect } from "react";
 import { fetchProducts, productSelector } from "../features/catalog/catalogSlice";
-import { currencyTRY } from "../utils/formatCurrency";
 import Product from "./catalog/Product";
 
 export default function HomePage() {

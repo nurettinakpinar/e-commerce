@@ -6,7 +6,6 @@ import {
     Card, 
     CardContent,
     InputAdornment,
-    Alert
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { 
@@ -56,33 +55,38 @@ export default function AddressForm() {
                     <Grid2 container spacing={3}>
                         {/* Name Fields */}
                         <Grid2 size={{ xs: 12, md: 6 }}>
-                            <TextField 
-                                {...register("firstname", { 
-                                    required: "Adınızı giriniz",
-                                    validate: validateName
-                                })}
-                                label="Ad"
-                                fullWidth
-                                error={!!errors.firstname}
-                                helperText={errors.firstname?.message}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Person sx={{ color: "#D4AF37" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        "&:hover fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                    }
-                                }}
-                            />
+<TextField
+    {...register("firstname", { 
+        required: "Adınızı giriniz",
+        validate: validateName
+    })}
+    label="Ad"
+    fullWidth
+    error={!!errors.firstname}
+    helperText={
+        typeof errors.firstname?.message === "string"
+            ? errors.firstname.message
+            : ""
+    }
+    InputProps={{
+        startAdornment: (
+            <InputAdornment position="start">
+                <Person sx={{ color: "#D4AF37" }} />
+            </InputAdornment>
+        ),
+    }}
+    sx={{
+        "& .MuiOutlinedInput-root": {
+            "&:hover fieldset": {
+                borderColor: "#D4AF37",
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: "#D4AF37",
+            },
+        }
+    }}
+/>
+
                         </Grid2>
 
                         <Grid2 size={{ xs: 12, md: 6 }}>
@@ -94,7 +98,7 @@ export default function AddressForm() {
                                 label="Soyad"
                                 fullWidth
                                 error={!!errors.lastname}
-                                helperText={errors.lastname?.message}
+                                helperText={errors.lastname?.message === "string" ? errors.lastname.message : ""}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         "&:hover fieldset": {
@@ -110,34 +114,39 @@ export default function AddressForm() {
 
                         {/* Contact Fields */}
                         <Grid2 size={{ xs: 12, md: 6 }}>
-                            <TextField 
-                                {...register("phone", { 
-                                    required: "Telefon numaranızı giriniz",
-                                    validate: validatePhone
-                                })}
-                                label="Telefon Numarası"
-                                fullWidth
-                                placeholder="0505 123 4567"
-                                error={!!errors.phone}
-                                helperText={errors.phone?.message || "Teslimat için gereklidir"}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Phone sx={{ color: "#D4AF37" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        "&:hover fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                    }
-                                }}
-                            />
+                           <TextField
+    {...register("phone", { 
+        required: "Telefon numaranızı giriniz",
+        validate: validatePhone
+    })}
+    label="Telefon Numarası"
+    fullWidth
+    placeholder="0505 123 4567"
+    error={!!errors.phone}
+    helperText={
+        typeof errors.phone?.message === "string"
+            ? errors.phone.message
+            : "Teslimat için gereklidir"
+    }
+    InputProps={{
+        startAdornment: (
+            <InputAdornment position="start">
+                <Phone sx={{ color: "#D4AF37" }} />
+            </InputAdornment>
+        ),
+    }}
+    sx={{
+        "& .MuiOutlinedInput-root": {
+            "&:hover fieldset": {
+                borderColor: "#D4AF37",
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: "#D4AF37",
+            },
+        }
+    }}
+/>
+
                         </Grid2>
 
                         <Grid2 size={{ xs: 12, md: 6 }}>
@@ -149,7 +158,7 @@ export default function AddressForm() {
                                 label="Şehir"
                                 fullWidth
                                 error={!!errors.city}
-                                helperText={errors.city?.message}
+                                helperText={errors.city?.message === "string" ? errors.city.message : ""}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -172,36 +181,41 @@ export default function AddressForm() {
 
                         {/* Address Field */}
                         <Grid2 size={{ xs: 12 }}>
-                            <TextField 
-                                {...register("addressline", { 
-                                    required: "Adres giriniz",
-                                    minLength: { value: 10, message: "En az 10 karakter olmalıdır" }
-                                })}
-                                label="Detaylı Adres"
-                                fullWidth
-                                multiline
-                                rows={4}
-                                placeholder="Mahalle, sokak, bina no, daire no gibi detaylı adres bilgilerinizi giriniz"
-                                error={!!errors.addressline}
-                                helperText={errors.addressline?.message || "Teslimat için detaylı adres gereklidir"}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start" sx={{ alignSelf: "flex-start", mt: 1 }}>
-                                            <Home sx={{ color: "#D4AF37" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        "&:hover fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#D4AF37",
-                                        },
+                           <TextField
+                                    {...register("addressline", { 
+                                        required: "Adres giriniz",
+                                        minLength: { value: 10, message: "En az 10 karakter olmalıdır" }
+                                    })}
+                                    label="Detaylı Adres"
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    placeholder="Mahalle, sokak, bina no, daire no gibi detaylı adres bilgilerinizi giriniz"
+                                    error={!!errors.addressline}
+                                    helperText={
+                                        typeof errors.addressline?.message === "string"
+                                            ? errors.addressline.message
+                                            : "Teslimat için detaylı adres gereklidir"
                                     }
-                                }}
-                            />
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ alignSelf: "flex-start", mt: 1 }}>
+                                                <Home sx={{ color: "#D4AF37" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                            "&:hover fieldset": {
+                                                borderColor: "#D4AF37",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "#D4AF37",
+                                            },
+                                        }
+                                    }}
+                                />
+
                         </Grid2>
                     </Grid2>
                 </CardContent>

@@ -19,13 +19,9 @@ import {
     Paper,
     Grid2,
     Card,
-    CardContent,
-    CardMedia,
     IconButton,
-    Alert,
     FormControlLabel,
     Switch,
-    Divider,
     ImageList,
     ImageListItem,
     ImageListItemBar
@@ -268,7 +264,7 @@ export default function AdminProducts() {
                                         >
                                             {p.imageUrl ? (
                                                 <img
-                                                    src={`http://localhost:5298/images/${p.imageUrl}`}
+                                                    src={`${import.meta.env.VITE_API_URL}/images/${p.imageUrl}`}
                                                     alt={p.name}
                                                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                                 />
@@ -306,7 +302,7 @@ export default function AdminProducts() {
                                     <Chip 
                                         label={`${p.stock} adet`} 
                                         size="small" 
-                                        color={p.stock > 10 ? "success" : p.stock > 0 ? "warning" : "error"}
+                                        color={(p.stock ?? 0) > 10 ? "success" : (p.stock ?? 0)> 0 ? "warning" : "error"}
                                     />
                                 </TableCell>
                                 <TableCell>
@@ -390,7 +386,7 @@ export default function AdminProducts() {
                                         {images.map((image, index) => (
                                             <ImageListItem key={index}>
                                                 <img
-                                                    src={`http://localhost:5298/images/${image}`}
+                                                    src={`${import.meta.env.VITE_API_URL}/images/${image}`}
                                                     alt={`Ürün fotoğrafı ${index + 1}`}
                                                     loading="lazy"
                                                     style={{ borderRadius: 8, height: 120, objectFit: 'cover' }}
@@ -485,7 +481,7 @@ export default function AdminProducts() {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={form.isActive}
+                                            checked={!!form.isActive}
                                             onChange={handleSwitchChange}
                                             name="isActive"
                                             color="warning"

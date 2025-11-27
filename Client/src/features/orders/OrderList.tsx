@@ -407,7 +407,7 @@ export default function OrderList() {
                                                         }}
                                                     >
                                                         <img 
-                                                            src={`http://localhost:5298/images/${item.productImg}`} 
+                                                            src={`${import.meta.env.VITE_API_URL}/images/${item.productImg}`} 
                                                             alt={item.productName}
                                                             style={{ 
                                                                 width: "100%", 

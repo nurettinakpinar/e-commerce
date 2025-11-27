@@ -15,13 +15,7 @@ import {
 } from "@mui/material";
 import { useAppSelector } from "../../store/store";
 import { currencyTRY } from "../../utils/formatCurrency";
-import { 
-    ShoppingCart, 
-    LocalShipping, 
-    Security, 
-    Diamond,
-    Inventory
-} from "@mui/icons-material";
+import { ShoppingCart, Diamond,Inventory } from "@mui/icons-material";
 
 export default function Info() {
     const { cart } = useAppSelector(state => state.cart);
@@ -67,7 +61,7 @@ export default function Info() {
                                     <ListItemAvatar>
                                         <Avatar 
                                             variant="rounded" 
-                                            src={`http://localhost:5298/images/${item.imageUrl}`}
+                                            src={`${import.meta.env.VITE_API_URL}/images/${item.imageUrl}`}
                                             sx={{ 
                                                 width: 50, 
                                                 height: 50,

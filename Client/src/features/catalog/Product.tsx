@@ -1,4 +1,4 @@
-import { AddShoppingCart, Favorite, Star, KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
+import { AddShoppingCart, Favorite,  KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import {
     Card, 
     CardMedia, 
@@ -11,7 +11,6 @@ import {
     IconButton,
     Stack,
     Rating,
-    MobileStepper
 } from "@mui/material";
 import { Link } from "react-router";
 import { IProduct } from "../../models/IProduct";
@@ -90,7 +89,7 @@ export default function Product({ product }: Props) {
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }} 
-                        image={images.length > 0 ? `http://localhost:5298/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
+                        image={images.length > 0 ? `${import.meta.env.VITE_API_URL}/images/${images[currentImageIndex]}` : '/placeholder.jpg'} 
                     />
                 </Box>
                 
