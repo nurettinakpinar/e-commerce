@@ -6,7 +6,9 @@ services:
     container_name: mssql_server
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=nurettin123
+      - SA_PASSWORD=Nurettin@123
+      - MSSQL_RPC_PORT=135
+      - MSSQL_DISABLE_TLS=1
     ports:
       - "1433:1433"
     networks:
@@ -17,7 +19,7 @@ services:
       context: ./API
     container_name: dotnet_api
     ports:
-      - "8080:8080"
+      - "8080:8080"   # İstersen burayı "0.0.0.0:8080:8080" yapabiliriz
     environment:
       ASPNETCORE_URLS: "http://+:8080"
     networks:
@@ -28,7 +30,7 @@ services:
       context: ./Client
     container_name: react_client
     ports:
-      - "3000:80"
+      - "0.0.0.0:3000:80"   # 📌 ÖNEMLİ: dış IP’den erişim için
     depends_on:
       - api
     networks:

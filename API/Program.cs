@@ -1,13 +1,14 @@
-using System.Text;
-using API.Data;
+﻿using API.Data;
 using API.Entity;
 using API.Middlewares;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +81,8 @@ builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
+
+
 app.UseMiddleware<ExceptionHandling>();
 
 // Configure the HTTP request pipeline.
@@ -96,15 +99,31 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // This allows the reach static files for others.
-app.UseStaticFiles();
+app.UseStaticFiles(); // normal static files
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+    RequestPath = "/api/images"
+});
 
 // CORS Configuration: 
 // This allows requests from 'http://localhost:3000' (React frontend) to access this API.
 // It permits any HTTP headers and any HTTP methods (GET, POST, PUT, DELETE, etc.).
 // Make sure this origin matches the frontend running in development.
+var allowedOrigins = new[]
+{
+    "http://localhost:3000",
+    "http://10.20.88.194:3000"
+};
+
 app.UseCors(opt =>
 {
-    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
+    opt.WithOrigins(allowedOrigins)
+       .AllowAnyHeader()
+       .AllowAnyMethod()
+       .AllowCredentials();
 });
 
 app.UseAuthentication();
@@ -113,6 +132,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-SeedDatabase.Initialize(app);
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
+    SeedDatabase.Initialize(app);
+}
 
 app.Run();
